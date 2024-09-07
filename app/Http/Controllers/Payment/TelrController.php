@@ -29,7 +29,7 @@ class TelrController extends Controller
         $storeId = env('TELR_STORE_ID');
         $authKey = env('TELR_AUTHENTICATION_KEY');
         $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-            'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->ammount . '","currency":"' . $request->currency . '","description":"' . $request->desc . '"},"return":{"authorised":"https://watan.website/telr/checkout-payment-detail","declined":"https://watan.website/telr/cancel","cancelled":"https://watan.website/telr/cancel"}}',
+            'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"0","amount":"' . $request->ammount . '","currency":"' . $request->currency . '","description":"' . $request->desc . '"},"return":{"authorised":"https://watan.website/telr/success","declined":"https://watan.website/telr/success","cancelled":"https://watan.website/telr/cancel"}}',
             'headers' => [
                 'Content-Type' => 'application/json',
                 'accept' => 'application/json',

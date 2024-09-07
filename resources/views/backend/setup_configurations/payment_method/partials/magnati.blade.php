@@ -4,22 +4,22 @@
     <div class="form-group row">
         <input type="hidden" name="types[]" value="Magnati_KEY">
         <div class="col-md-4">
-            <label class="col-from-label">{{ translate('Magnati Key') }}</label>
+            <label class="col-from-label">{{ translate('Magnati Shared Secret') }}</label>
         </div>
         <div class="col-md-8">
-            <input type="text" class="form-control" name="Magnati_KEY"
-                value="{{ env('Magnati_KEY') }}" placeholder="{{ translate('Magnati KEY') }}"
+            <input type="text" class="form-control" name="MAGNATI_SHARED_SECRET"
+                value="{{ env('MAGNATI_SHARED_SECRET') }}" placeholder="{{ translate('Magnati SHARED SECRET') }}"
                 required>
         </div>
     </div>
     <div class="form-group row">
-        <input type="hidden" name="types[]" value="Magnati_SECRET">
+        <input type="hidden" name="types[]" value="MAGNATI_STORE_NAME">
         <div class="col-md-4">
-            <label class="col-from-label">{{ translate('Magnati Secret') }}</label>
+            <label class="col-from-label">{{ translate('Magnati Store Name') }}</label>
         </div>
         <div class="col-md-8">
-            <input type="text" class="form-control" name="Magnati_SECRET"
-                value="{{ env('Magnati_SECRET') }}" placeholder="{{ translate('Magnati SECRET') }}"
+            <input type="text" class="form-control" name="MAGNATI_STORE_NAME"
+                value="{{ env('MAGNATI_STORE_NAME') }}" placeholder="{{ translate('Magnati Store Name') }}"
                 required>
         </div>
     </div>

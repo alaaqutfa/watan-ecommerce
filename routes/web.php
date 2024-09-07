@@ -37,6 +37,7 @@ use App\Http\Controllers\Payment\RazorpayController;
 use App\Http\Controllers\Payment\SslcommerzController;
 use App\Http\Controllers\Payment\StripeController;
 use App\Http\Controllers\Payment\TelrController;
+use App\Http\Controllers\Payment\MagnatiController;
 use App\Http\Controllers\Payment\TapController;
 use App\Http\Controllers\Payment\VoguepayController;
 use App\Http\Controllers\ProductQueryController;
@@ -245,6 +246,14 @@ Route::controller(TelrController::class)->group(function () {
     Route::get('/telr/cancel', 'cancel')->name('telr.cancel');
 });
 //Telr END
+
+//Magnati Start
+Route::controller(MagnatiController::class)->group(function () {
+    Route::get('magnati', 'magnati');
+    Route::post('/magnati/success', 'success')->name('magnati.success');
+    Route::post('/magnati/cancel', 'cancel')->name('magnati.cancel');
+});
+//Magnati END
 
 // Compare
 Route::controller(CompareController::class)->group(function () {

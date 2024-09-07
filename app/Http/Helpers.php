@@ -190,13 +190,24 @@ if (!function_exists('convert_price')) {
             $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
             $price = floatval($price) * floatval(Session::get('currency_exchange_rate'));
         }
-
         if (
             request()->header('Currency-Code') &&
             request()->header('Currency-Code') != get_system_default_currency()->code
         ) {
             $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
             $price = floatval($price) * floatval(request()->header('Currency-Exchange-Rate'));
+        }
+        return $price;
+    }
+}
+
+//converts currency to AED currency
+if (!function_exists('convert_price_aed')) {
+    function convert_price_aed($price)
+    {
+        if (Session::get('currency_symbol') != "AED" || request()->header('Currency-Code') != "AED") {
+            $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
+            $price = floatval($price) * floatval(env('Aed_Exchange_Rate'));
         }
         return $price;
     }
@@ -220,7 +231,7 @@ if (!function_exists('currency_symbol')) {
 if (!function_exists('format_price')) {
     function format_price($price, $isMinimize = false)
     {
-        $price = convert_price($price);
+        // $price = convert_price($price);
         if (get_setting('decimal_separator') == 1) {
             $fomated_price = number_format($price, get_setting('no_of_decimals'));
         } else {
@@ -734,7 +745,6 @@ if (!function_exists('home_discounted_base_price')) {
     {
         $price = $product->unit_price;
         $tax = 0;
-
         $discount_applicable = false;
 
         if ($product->discount_start_date == null) {
@@ -762,7 +772,6 @@ if (!function_exists('home_discounted_base_price')) {
             }
         }
         $price += $tax;
-
 
         return $formatted ? format_price(convert_price($price)) : convert_price($price);
     }
