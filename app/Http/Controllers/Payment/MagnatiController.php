@@ -22,9 +22,9 @@ class MagnatiController extends Controller
         $user = auth()->user();
         $order = Order::where([['user_id', '=', $user->id], ['payment_status', '=', 'unpaid']], ['payment_type', '=', 'magnati'])->orderBy('created_at', 'desc')->latest()->first();
         // ! Prod
-        //  $send = "https://www.ipg-online.com/connect/gateway/processing";
+         $send = "https://www.ipg-online.com/connect/gateway/processing";
         // ! Test
-        $send = "https://test.ipg-online.com/connect/gateway/processing";
+        // $send = "https://test.ipg-online.com/connect/gateway/processing";
         // Timezeone needs to be set
         return view('frontend.payment.magnati', compact('order', 'send'));
     }
