@@ -19,7 +19,6 @@ class MagnatiController extends Controller
      */
     public function pay(Request $request)
     {
-        // Alaa
         $user = auth()->user();
         $order = Order::where([['user_id', '=', $user->id], ['payment_status', '=', 'unpaid']], ['payment_type', '=', 'magnati'])->orderBy('created_at', 'desc')->latest()->first();
         // ! Prod
