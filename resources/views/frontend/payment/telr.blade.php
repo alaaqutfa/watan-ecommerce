@@ -1,9 +1,12 @@
+@php($price = convert_price_aed($order->grand_total))
 <html>
 
 <head>
     <title>Telr Payment</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_token" content="{{ csrf_token() }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .loader {
             border: 16px solid #f3f3f3;
@@ -41,34 +44,38 @@
 </head>
 
 <body>
-    <div class="loadContainer">
-        <center>
-            <div class="loader"></div>
-            <br>
-            <br>
-            <p style="width: 250px; margin: auto;">Don't close the tab. The payment is being processed . . .</p>
-        </center>
+    <div class="container w-100 d-flex justify-content-center align-items-center flex-column" style="height: 100vh">
+        <div class="loadContainer">
+            <center>
+                <div class="loader"></div>
+                <br>
+                <br>
+                <p style="width: 250px; margin: auto;">Don't close the tab. The payment is being processed . . .</p>
+            </center>
+        </div>
+        <div class="card invisible">
+            <div class="card-body">
+                <a id="telrPay" href="" class="btn btn-success invisible">{{ translate('Pay Now') }}</a>
+            </div>
+        </div>
     </div>
-    <iframe src="" id="telrPay" style="display: none;width: 100%;height: 100vh;" frameborder="0"></iframe>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script type="text/javascript">
-        var currency = "{{ $currency }}";
-        if (currency == "$") {
-            currency = "USD";
-        } else if (currency == "aed") {
-            currency = "AED";
-        }
+        var combined_order_id = {{ $order->combined_order_id }};
+        var DBdesc = "{{ $order->shipping_address }}";
+        var info = DBdesc.replaceAll("&quot;", '"');
         var data = {
             code: "{{ $order->code }}",
-            ammount: "{{ $order->grand_total }}",
-            desc: "{{ $order->shipping_address }}",
-            currency,
+            ammount: "{{ $price }}",
+            info,
+            combined_order_id
         };
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Content-Type': 'application/json',
-                'accept':'application/json',
+                'accept': 'application/json',
             }
         });
         $.ajax({
@@ -78,12 +85,13 @@
             contentType: "application/json",
             success: function(data) {
                 var res = JSON.parse(data);
-                $('#telrPay').attr('src',res['order']['url']);
-                $('.loadContainer').hide();
-                $('#telrPay').show();
+                $('#telrPay').attr('href', res['order']['url']);
+                setTimeout(() => {
+                    document.getElementById("telrPay").click();
+                }, 1000);
             },
             error: function(errMsg) {
-
+                console.log(errMsg);
             }
         });
     </script>

@@ -112,7 +112,7 @@
             <div class="card-body">
                 <input type="hidden" name="sharedsecret" value='{{ env('MAGNATI_SHARED_SECRET') }}' />
                 <form id="paymentForm" method="post" action="#">
-                    <input type="hidden" name="customParam_token" value=""/>
+                    {{-- <input type="hidden" name="customParam_token" value=""/> --}}
                     <input type="hidden" name="hash_algorithm" value="HMACSHA256" />
                     <input type="hidden" name="checkoutoption" value="combinedpage" />
                     <input type="hidden" name="language" value="en_US" />
@@ -125,8 +125,6 @@
                     @php($price = convert_price_aed($order->grand_total))
                     <input type="hidden" name="chargetotal" value="{{ $price }}" />
                     <input type="hidden" name="authenticateTransaction" value="true" readonly="readonly" />
-                    <input type="hidden" name="parentUri"
-                        value="https://www.ipg-online.com/mcs/flow/msearch?execution=e2s2" />
                     <input type="hidden" name="oid" value="{{ $order->code }}" />
                     <input type="hidden" name="responseFailURL" value="{{ route('magnati.cancel') }}" />
                     <input type="hidden" name="responseSuccessURL" value="{{ route('magnati.success') }}" />

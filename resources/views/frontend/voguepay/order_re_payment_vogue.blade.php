@@ -18,7 +18,7 @@
     <input type="hidden" id="merchant_id" name="v_merchant_id" value="{{ env('VOGUE_MERCHANT_ID') }}">
 @endif
 @php
-    $order = get_order_info(Session::get('payment_data')['order_id']);s
+    $order = get_order_info(Session::get('payment_data')['order_id']);
     $shipping_info = json_decode($order->shipping_address);
 @endphp
 

@@ -240,8 +240,6 @@ Route::controller(StripeController::class)->group(function () {
 Route::controller(TelrController::class)->group(function () {
     Route::get('telr', 'telr');
     Route::post('/telr/create-checkout-session', 'create_checkout_session')->name('telr.get_token');
-    Route::post('/telr/checkout-payment-detail', 'checkout_payment_detail')->name('telr.get_status');
-    Route::any('/telr/payment/callback', 'callback')->name('telr.callback');
     Route::get('/telr/success', 'success')->name('telr.success');
     Route::get('/telr/cancel', 'cancel')->name('telr.cancel');
 });

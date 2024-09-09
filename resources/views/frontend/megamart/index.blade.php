@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-alii
+
     <style>
         #section_featured .slick-slider .slick-list{
             background: #fff;
@@ -59,7 +59,7 @@ alii
                                     <a class="fs-13 fw-500 text-center text-reset hov-text-primary"
                                         href="{{ route('products.category', $category->slug) }}"
                                         style="width: max-content;">
-                                        {{ $category_name ali }}
+                                        {{ $category_name }}
                                     </a>
                                 </div>
                             </div>
