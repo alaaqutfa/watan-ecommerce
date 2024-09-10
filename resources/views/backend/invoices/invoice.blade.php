@@ -210,10 +210,11 @@
 					<tr>
 						<td class="text-left">
 							@php
-							$removedXML = '
-							<?xml version="1.0" encoding="UTF-8"?>';
-							@endphp
-							{!! str_replace($removedXML,"", QrCode::size(100)->generate($order->code)) !!}
+$qrCode = QrCode::size(100)->generate($order->code);
+$qrCode = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCode);
+@endphp
+
+{!! $qrCode !!}
 						</td>
 						<td>
 							<table class="text-right sm-padding small strong">
@@ -235,8 +236,9 @@
 									</tr>
 
 									<tr class="border-bottom">
-										<th class="gry-color text-left">{{ translate('15% Customs and Clearance Fees')
-											}}</th>
+										<th class="gry-color text-left">{{ translate('15% Customs and Clearance Fees')}}
+
+										</th>
 										<td class="currency">
 											{{ single_price($order->orderDetails->sum('price') * 0.15) }}
 										</td>
