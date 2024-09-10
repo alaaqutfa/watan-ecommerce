@@ -235,20 +235,32 @@
                         </td>
                     </tr>
                     <tr>
+                    <tr>
+                        <td>
+                            <strong class="text-muted">{{ translate('Tax') }} :</strong>
+                        </td>
+                        <td>
+                            {{ single_price($order->orderDetails->sum('tax')) }}
+                        </td>
+                    </tr>
+
+                    <!-- 5% Tax -->
+                    <tr>
                         <td>
                             <strong class="text-muted">{{ translate('5% Tax') }} :</strong>
                         </td>
                         <td>
-                            {{ single_price($subtotal * 0.05) }}
+                            {{ single_price($order->orderDetails->sum('tax') * 0.05) }}
                         </td>
                     </tr>
 
+                    <!-- 15% Customs and Clearance Fees -->
                     <tr>
                         <td>
                             <strong class="text-muted">{{ translate('15% Customs and Clearance Fees') }} :</strong>
                         </td>
                         <td>
-                            {{ single_price($subtotal * 0.15) }}
+                            {{ single_price($order->orderDetails->sum('tax') * 0.15) }}
                         </td>
                     </tr>
 
