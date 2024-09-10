@@ -98,7 +98,8 @@
 				<tr>
 					<td class="gry-color small">{{ translate('Phone') }}: {{ get_setting('contact_phone') }}</td>
 					<td class="text-right small"><span class="gry-color small">{{ translate('Order Date') }}:</span>
-						<span class=" strong">{{ date('d-m-Y', $order->date) }}</span></td>
+						<span class=" strong">{{ date('d-m-Y', $order->date) }}</span>
+					</td>
 				</tr>
 				<tr>
 					<td class="gry-color small"></td>
@@ -149,7 +150,7 @@
 						<th width="15%" class="text-left">{{ translate('Delivery Type') }}</th>
 						<th width="10%" class="text-left">{{ translate('Qty') }}</th>
 						<th width="15%" class="text-left">{{ translate('Unit Price') }}</th>
-						<th width="10%" class="text-left">{{ translate('Tax') }}</th>
+						<th width="10%" class="text-left">{{ translate('Tax 5% +  Customs and Clearance Fees 15% ') }}</th>
 						<th width="15%" class="text-right">{{ translate('Total') }}</th>
 					</tr>
 				</thead>
@@ -210,11 +211,12 @@
 					<tr>
 						<td class="text-left">
 							@php
-$qrCode = QrCode::size(100)->generate($order->code);
-$qrCode = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCode);
-@endphp
+							$qrCode = QrCode::size(100)->generate($order->code);
+							$qrCode = str_replace('
+							<?xml version="1.0" encoding="UTF-8"?>', '', $qrCode);
+							@endphp
 
-{!! $qrCode !!}
+							{!! $qrCode !!}
 						</td>
 						<td>
 							<table class="text-right sm-padding small strong">
