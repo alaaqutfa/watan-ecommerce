@@ -239,7 +239,7 @@
                             <strong class="text-muted">{{ translate('5% Tax') }} :</strong>
                         </td>
                         <td>
-                            {{ single_price($order->orderDetails->sum('subtotal') * 0.05) }}
+                            {{ single_price($subtotal * 0.05) }}
                         </td>
                     </tr>
 
@@ -248,9 +248,10 @@
                             <strong class="text-muted">{{ translate('15% Customs and Clearance Fees') }} :</strong>
                         </td>
                         <td>
-                            {{ single_price($order->orderDetails->sum('subtotal') * 0.15) }}
+                            {{ single_price($subtotal * 0.15) }}
                         </td>
                     </tr>
+
 
                     <tr>
                         <td>
