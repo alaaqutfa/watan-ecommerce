@@ -213,12 +213,11 @@
 					<tr>
 						<td class="text-left">
 							@php
-							$qrCode = QrCode::size(100)->generate($order->code);
-							$qrCode = str_replace('
-							<?xml version="1.0" encoding="UTF-8"?>', '', $qrCode);
+							$qrCode = QrCode::format('png')->size(100)->generate($order->code);
+							$qrCodeData = base64_encode($qrCode);
 							@endphp
-
-							{!! $qrCode !!}
+							
+							<img src="data:image/png;base64,{{ $qrCodeData }}" alt="QR Code">
 
 						</td>
 						<td>
