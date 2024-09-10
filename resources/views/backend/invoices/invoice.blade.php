@@ -213,11 +213,9 @@
 					<tr>
 						<td class="text-left">
 							@php
-							$qrCode = QrCode::size(100)->generate($order->code);
-							$qrCode = str_replace('
-							<?xml version="1.0" encoding="UTF-8"?>', '', $qrCode);
+							$qrCode = QrCode::size(50)->generate($order->code);
+							$qrCode = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrCode);
 							@endphp
-
 							{!! $qrCode !!}
 
 						</td>
