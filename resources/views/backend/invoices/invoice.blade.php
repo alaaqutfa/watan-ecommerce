@@ -98,8 +98,7 @@
 				<tr>
 					<td class="gry-color small">{{ translate('Phone') }}: {{ get_setting('contact_phone') }}</td>
 					<td class="text-right small"><span class="gry-color small">{{ translate('Order Date') }}:</span>
-						<span class=" strong">{{ date('d-m-Y', $order->date) }}</span>
-					</td>
+						<span class=" strong">{{ date('d-m-Y', $order->date) }}</span></td>
 				</tr>
 				<tr>
 					<td class="gry-color small"></td>
