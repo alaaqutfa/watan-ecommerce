@@ -150,7 +150,9 @@
 						<th width="15%" class="text-left">{{ translate('Delivery Type') }}</th>
 						<th width="10%" class="text-left">{{ translate('Qty') }}</th>
 						<th width="15%" class="text-left">{{ translate('Unit Price') }}</th>
-						<th width="10%" class="text-left">{{ translate('Tax') }}</th>
+						<th width="20%" class="text-left" style="word-wrap: break-word;">
+							{{ translate('Tax 5% + Customs and Clearance Fees 15%') }}
+						</th>
 						<th width="15%" class="text-right">{{ translate('Total') }}</th>
 					</tr>
 				</thead>
@@ -217,6 +219,7 @@
 							@endphp
 
 							{!! $qrCode !!}
+
 						</td>
 						<td>
 							<table class="text-right sm-padding small strong">
