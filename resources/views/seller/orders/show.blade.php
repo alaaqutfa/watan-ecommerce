@@ -234,25 +234,24 @@
                             {{ single_price($order->orderDetails->sum('price')) }}
                         </td>
                     </tr>
-                    <!-- 5% Tax -->
-                    <tr class="cart-tax">
-                        <th class="pl-0 fs-14 fw-400 pt-0 pb-2 text-dark border-top-0">
-                            {{ translate('5% Tax') }}
-                        </th>
-                        <td class="text-right pr-0 fs-14 pt-0 pb-2 text-dark border-top-0">
-                            {{ single_price($subtotal * 0.05) }}
+                    <tr>
+                        <td>
+                            <strong class="text-muted">{{ translate('5% Tax') }} :</strong>
+                        </td>
+                        <td>
+                            {{ single_price($order->orderDetails->sum('subtotal') * 0.05) }}
                         </td>
                     </tr>
 
-                    <!-- 15% Customs and Clearance Fees -->
-                    <tr class="cart-tax">
-                        <th class="pl-0 fs-14 fw-400 pt-0 pb-2 text-dark border-top-0">
-                            {{ translate('15% Customs and Clearance Fees') }}
-                        </th>
-                        <td class="text-right pr-0 fs-14 pt-0 pb-2 text-dark border-top-0">
-                            {{ single_price($subtotal * 0.15) }}
+                    <tr>
+                        <td>
+                            <strong class="text-muted">{{ translate('15% Customs and Clearance Fees') }} :</strong>
+                        </td>
+                        <td>
+                            {{ single_price($order->orderDetails->sum('subtotal') * 0.15) }}
                         </td>
                     </tr>
+
                     <tr>
                         <td>
                             <strong class="text-muted">{{ translate('Shipping') }} :</strong>
