@@ -72,7 +72,7 @@ class InstallController extends Controller
 
         $this->writeEnvironmentFile('APP_NAME', $request->system_name);
         Artisan::call('key:generate');
-
+//test
         $user = new User;
         $user->name      = $request->admin_name;
         $user->email     = $request->admin_email;
