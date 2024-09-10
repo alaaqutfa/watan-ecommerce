@@ -150,7 +150,10 @@
 						<th width="15%" class="text-left">{{ translate('Delivery Type') }}</th>
 						<th width="10%" class="text-left">{{ translate('Qty') }}</th>
 						<th width="15%" class="text-left">{{ translate('Unit Price') }}</th>
-						<th width="10%" class="text-left">{{ translate('Tax 5% +  Customs and Clearance Fees 15% ') }}</th>
+						<th width="20%" class="text-left" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+							{{ translate('Tax 5% + Customs and Clearance Fees 15%') }}
+						</th>
+						
 						<th width="15%" class="text-right">{{ translate('Total') }}</th>
 					</tr>
 				</thead>
