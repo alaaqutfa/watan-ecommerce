@@ -142,7 +142,62 @@
 			</table>
 		</div>
 
-		
+		<div style="padding: 1rem;">
+			<table class="padding text-left small border-bottom">
+				<thead>
+					<tr class="gry-color" style="background: #eceff4;">
+						<th width="35%" class="text-left">{{ translate('Product Name') }}</th>
+						<th width="15%" class="text-left">{{ translate('Delivery Type') }}</th>
+						<th width="10%" class="text-left">{{ translate('Qty') }}</th>
+						<th width="15%" class="text-left">{{ translate('Unit Price') }}</th>
+						<th width="10%" class="text-left">{{ translate('Tax') }}</th>
+						<th width="15%" class="text-right">{{ translate('Total') }}</th>
+					</tr>
+				</thead>
+				<tbody class="strong">
+					@foreach ($order->orderDetails as $key => $orderDetail)
+					@if ($orderDetail->product != null)
+					<tr class="">
+						<td>
+							{{ $orderDetail->product->name }}
+							@if($orderDetail->variation != null) ({{ $orderDetail->variation }}) @endif
+							<br>
+							<small>
+								@php
+								$product_stock = json_decode($orderDetail->product->stocks->first(), true);
+								@endphp
+								{{translate('SKU')}}: {{ $product_stock['sku'] }}
+							</small>
+						</td>
+						<td>
+							@if ($order->shipping_type != null && $order->shipping_type == 'home_delivery')
+							{{ translate('Home Delivery') }}
+							@elseif ($order->shipping_type == 'pickup_point')
+							@if ($order->pickup_point != null)
+							{{ $order->pickup_point->getTranslation('name') }} ({{ translate('Pickip Point') }})
+							@else
+							{{ translate('Pickup Point') }}
+							@endif
+							@elseif ($order->shipping_type == 'carrier')
+							@if ($order->carrier != null)
+							{{ $order->carrier->name }} ({{ translate('Carrier') }})
+							<br>
+							{{ translate('Transit Time').' - '.$order->carrier->transit_time }}
+							@else
+							{{ translate('Carrier') }}
+							@endif
+							@endif
+						</td>
+						<td class="">{{ $orderDetail->quantity }}</td>
+						<td class="currency">{{ single_price($orderDetail->price/$orderDetail->quantity) }}</td>
+						<td class="currency">{{ single_price($orderDetail->tax/$orderDetail->quantity) }}</td>
+						<td class="text-right currency">{{ single_price($orderDetail->price+$orderDetail->tax) }}</td>
+					</tr>
+					@endif
+					@endforeach
+				</tbody>
+			</table>
+		</div>
 
 		<div style="padding:0 1.5rem;">
 			<table class="text-right sm-padding small strong">
