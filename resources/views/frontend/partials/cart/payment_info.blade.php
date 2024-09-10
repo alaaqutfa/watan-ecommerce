@@ -10,7 +10,7 @@
         {{ translate('Select a payment option') }}
     </h3>
     <div class="row gutters-10">
-        @foreach (get_activate_payment_methods() as $payment_method)
+        {{-- @foreach (get_activate_payment_methods() as $payment_method)
             <div class="col-xl-4 col-md-6">
                 <label class="aiz-megabox d-block mb-3">
                     <input value="{{ $payment_method->name }}" class="online_payment" type="radio"
@@ -24,7 +24,7 @@
                     </span>
                 </label>
             </div>
-        @endforeach
+        @endforeach --}}
 
         <!-- Cash Payment -->
         @if (get_setting('cash_payment') == 1)
