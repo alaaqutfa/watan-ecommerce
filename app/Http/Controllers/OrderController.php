@@ -45,7 +45,7 @@ class OrderController extends Controller
         $delivery_status = null;
         $payment_status = '';
 
-        $orders = Order::orderBy('id', 'desc');
+        $orders = Order::with('orderDetails')->orderBy('id', 'desc');
         $admin_user_id = User::where('user_type', 'admin')->first()->id;
 
 
@@ -118,6 +118,8 @@ class OrderController extends Controller
     {
         $order = Order::where('id',$id)->with('orderDetails')->first();
 
+        $order->grand_total-=$order->orderDetails->sum('shipping_cost');
+
         $new_shipping_cost = $request->input('shipping_cost');
     
          foreach ($order->orderDetails as $orderDetail) {
@@ -127,6 +129,8 @@ class OrderController extends Controller
     
         $order->grand_total += $new_shipping_cost;
         $order->save(); 
+
+        NotificationUtility::sendOrderPlacedNotification($order);
         
         flash(translate('Product has been updated successfully'))->success();
         

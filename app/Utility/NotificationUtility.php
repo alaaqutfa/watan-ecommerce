@@ -53,6 +53,47 @@ class NotificationUtility
         }
     }
 
+    public function sendShippingPriceConfirmedNotification($order , $request = null)
+    {
+        //sends email to customer with the invoice pdf attached
+        $array['view'] = 'emails.invoice';
+        $array['subject'] = translate('The shipping cost has been updated for the order ') . ' - ' . $order->code;
+        $array['from'] = env('MAIL_FROM_ADDRESS');
+        $array['order'] = $order;
+        try {
+            if ($order->user->email != null) {
+                Mail::to($order->user->email)->queue(new InvoiceEmailManager($array));
+            }
+            Mail::to($order->orderDetails->first()->product->user->email)->queue(new InvoiceEmailManager($array));
+        } catch (\Exception $e) {
+
+        }
+
+        if (addon_is_activated('otp_system') && SmsTemplate::where('identifier', 'order_placement')->first()->status == 1) {
+            try {
+                $otpController = new OTPVerificationController;
+                $otpController->send_order_code($order);
+            } catch (\Exception $e) {
+
+            }
+        }
+
+        //sends Notifications to user
+        self::sendNotification($order, 'placed');
+        if ($request !=null && get_setting('google_firebase') == 1 && $order->user->device_token != null) {
+            $request->device_token = $order->user->device_token;
+            $request->title = "Order placed !";
+            $request->text = "An order {$order->code} has been placed";
+
+            $request->type = "order";
+            $request->id = $order->id;
+            $request->user_id = $order->user->id;
+
+            self::sendFirebaseNotification($request);
+        }
+    }
+
+
     public static function sendNotification($order, $order_status)
     {     
         $adminId = \App\Models\User::where('user_type', 'admin')->first()->id;

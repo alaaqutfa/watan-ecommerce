@@ -100,6 +100,7 @@
                             <th data-breakpoints="md">{{ translate('Delivery Status') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment method') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
+                            <th data-breakpoints="md">{{ translate('Shipping Cost') }}</th>
                             @if (addon_is_activated('refund_request'))
                                 <th>{{ translate('Refund') }}</th>
                             @endif
@@ -166,6 +167,15 @@
                                         <span class="badge badge-inline badge-danger">{{ translate('Unpaid') }}</span>
                                     @endif
                                 </td>
+                                
+                                <td>
+                                    @if ($order->orderDetails->sum('shipping_cost') > 0)
+                                        <span class="badge badge-inline badge-success">{{ translate('Modified') }}</span>
+                                    @else
+                                        <span class="badge badge-inline badge-danger">{{ translate('Not Modified') }}</span>
+                                    @endif
+                                </td>
+
                                 @if (addon_is_activated('refund_request'))
                                     <td>
                                         @if (count($order->refund_requests) > 0)
