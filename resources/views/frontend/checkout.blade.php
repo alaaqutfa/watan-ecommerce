@@ -75,9 +75,15 @@
                                     </div>
                                     <i class="las la-angle-down fs-18"></i>
                                 </div>
+
+                                
                                 <div id="collapsePaymentInfo" class="collapse show" aria-labelledby="headingPaymentInfo" data-parent="#accordioncCheckoutInfo">
                                     <div class="card-body" id="payment_info">
                                         @include('frontend.partials.cart.payment_info', ['carts' => $carts, 'total' => $total])
+
+                                        <div class="alert alert-warning" role="alert">
+                                            {{ translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)') }}
+                                        </div>
 
                                         <!-- Agree Box -->
                                         <div class="pt-2rem fs-14">

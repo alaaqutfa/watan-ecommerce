@@ -196,7 +196,7 @@
                                     <!---->
                                     @can('delete_order')
                                         <a href="{{ route('orders.edit', $order->id) }}"
-                                            class="btn btn-soft-primary btn-icon btn-circle btn-sm"
+                                            class="btn btn-soft-warning btn-icon btn-circle btn-sm"
                                             title="{{ translate('Edit') }}">
                                             <i class="las la-edit"></i>
                                         </a>
