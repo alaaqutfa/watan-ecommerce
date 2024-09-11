@@ -45,7 +45,7 @@ class OrderController extends Controller
         $delivery_status = null;
         $payment_status = '';
 
-        $orders = Order::orderBy('id', 'desc');
+        $orders = Order::with('orderDetails')->orderBy('id', 'desc');
         $admin_user_id = User::where('user_type', 'admin')->first()->id;
 
 
@@ -117,6 +117,10 @@ class OrderController extends Controller
     public function orders_update(Request $request, $id)
     {
         $order = Order::where('id',$id)->with('orderDetails')->first();
+        $combined_order_id = $order->combined_order_id;
+        $combined_orders = CombinedOrder::where('id',$combined_order_id)->first();
+        $combined_orders->grand_total -= $order->orderDetails->sum('shipping_cost');
+        $order->grand_total-=$order->orderDetails->sum('shipping_cost');
 
         $new_shipping_cost = $request->input('shipping_cost');
     
@@ -127,6 +131,11 @@ class OrderController extends Controller
     
         $order->grand_total += $new_shipping_cost;
         $order->save(); 
+
+        $combined_orders->grand_total += $new_shipping_cost;
+        $combined_orders->save();
+
+        NotificationUtility::sendOrderPlacedNotification($order);
         
         flash(translate('Product has been updated successfully'))->success();
         

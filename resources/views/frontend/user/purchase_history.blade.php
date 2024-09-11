@@ -14,6 +14,7 @@
                         <th>{{ translate('Amount')}}</th>
                         <th data-breakpoints="md">{{ translate('Delivery Status')}}</th>
                         <th data-breakpoints="md">{{ translate('Payment Status')}}</th>
+                        <th data-breakpoints="md">{{ translate('Shipping Cost Status') }}</th>
                         <th class="text-right pr-0">{{ translate('Options')}}</th>
                     </tr>
                 </thead>
@@ -49,6 +50,19 @@
                                         <span class="ml-2" style="color:green"><strong>*</strong></span>
                                     @endif
                                 </td>
+
+                                <!-- Shipping Cost Status -->
+                                <td>
+                                    @if ($order->orderDetails->first()->shipping_cost > 0)
+                                        <span class="badge badge-inline badge-success p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Modified')}}</span>
+                                    @else
+                                        <span class="badge badge-inline badge-danger p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Not Modified')}}</span>
+                                    @endif
+                                    @if($order->payment_status_viewed == 0)
+                                        <span class="ml-2" style="color:green"><strong>*</strong></span>
+                                    @endif
+                                </td>
+
                                 <!-- Options -->
                                 <td class="text-right pr-0">
                                     <!-- Re-order -->

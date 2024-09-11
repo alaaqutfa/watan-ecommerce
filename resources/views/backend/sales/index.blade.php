@@ -167,6 +167,15 @@
                                         <span class="badge badge-inline badge-danger">{{ translate('Unpaid') }}</span>
                                     @endif
                                 </td>
+
+                                <td>
+                                    @if ($order->orderDetails->sum('shipping_cost') > 0)
+                                        <span class="badge badge-inline badge-success">{{ translate('Modified') }}</span>
+                                    @else
+                                        <span class="badge badge-inline badge-danger">{{ translate('Not Modified') }}</span>
+                                    @endif
+                                </td>
+
                                 @if (addon_is_activated('refund_request'))
                                     <td>
                                         @if (count($order->refund_requests) > 0)
@@ -187,7 +196,7 @@
                                     <!---->
                                     @can('delete_order')
                                         <a href="{{ route('orders.edit', $order->id) }}"
-                                            class="btn btn-soft-primary btn-icon btn-circle btn-sm"
+                                            class="btn btn-soft-warning btn-icon btn-circle btn-sm"
                                             title="{{ translate('Edit') }}">
                                             <i class="las la-edit"></i>
                                         </a>
