@@ -100,7 +100,11 @@
                             <th data-breakpoints="md">{{ translate('Delivery Status') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment method') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
+<<<<<<< HEAD
                             <th data-breakpoints="md">{{ translate('Shipping Cost Status') }}</th>
+=======
+                            <th data-breakpoints="md">{{ translate('Shipping Cost') }}</th>
+>>>>>>> 941b38340741291ae4c845b2a8261ae0f8254f76
                             @if (addon_is_activated('refund_request'))
                                 <th>{{ translate('Refund') }}</th>
                             @endif
