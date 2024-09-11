@@ -197,7 +197,7 @@ if (!function_exists('convert_price')) {
             $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
             $price = floatval($price) * floatval(request()->header('Currency-Exchange-Rate'));
         }
-        return $price;
+        return number_format($price,2);
     }
 }
 
@@ -209,7 +209,7 @@ if (!function_exists('convert_price_aed')) {
             $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
             $price = floatval($price) * floatval(env('Aed_Exchange_Rate'));
         }
-        return $price;
+        return number_format($price,2);
     }
 }
 
@@ -233,20 +233,20 @@ if (!function_exists('format_price')) {
     {
         // $price = convert_price($price);
         if (get_setting('decimal_separator') == 1) {
-            $fomated_price = number_format($price, get_setting('no_of_decimals'));
+            $fomated_price = number_format(floatval($price), get_setting('no_of_decimals'));
         } else {
-            $fomated_price = number_format($price, get_setting('no_of_decimals'), ',', '.');
+            $fomated_price = number_format(floatval($price), get_setting('no_of_decimals'), ',', '.');
         }
 
 
         // Minimize the price
         if ($isMinimize) {
-            $temp = number_format($price / 1000000000, get_setting('no_of_decimals'), ".", "");
+            $temp = number_format(floatval($price) / 1000000000, get_setting('no_of_decimals'), ".", "");
 
             if ($temp >= 1) {
                 $fomated_price = $temp . "B";
             } else {
-                $temp = number_format($price / 1000000, get_setting('no_of_decimals'), ".", "");
+                $temp = number_format(floatval($price) / 1000000, get_setting('no_of_decimals'), ".", "");
                 if ($temp >= 1) {
                     $fomated_price = $temp . "M";
                 }
@@ -260,7 +260,7 @@ if (!function_exists('format_price')) {
         } else if (get_setting('symbol_format') == 4) {
             return $fomated_price . ' ' . currency_symbol();
         }
-        return $fomated_price . currency_symbol();
+        return $fomated_price . ' ' . currency_symbol();
     }
 }
 
@@ -275,8 +275,8 @@ if (!function_exists('single_price')) {
 if (!function_exists('discount_in_percentage')) {
     function discount_in_percentage($product)
     {
-        $base = home_base_price($product, false);
-        $reduced = home_discounted_base_price($product, false);
+        $base = floatval(home_base_price($product, false));
+        $reduced = floatval(home_discounted_base_price($product, false));
         $discount = $base - $reduced;
         $dp = ($discount * 100) / ($base > 0 ? $base : 1);
         return round($dp);
@@ -342,7 +342,7 @@ if (!function_exists('cart_product_price')) {
         }
 
         if ($formatted) {
-            return format_price(convert_price($price));
+            return format_price(convert_price($price),2);
         } else {
             return $price;
         }

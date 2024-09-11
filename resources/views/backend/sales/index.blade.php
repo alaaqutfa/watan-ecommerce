@@ -100,6 +100,7 @@
                             <th data-breakpoints="md">{{ translate('Delivery Status') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment method') }}</th>
                             <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
+                            <th data-breakpoints="md">{{ translate('Shipping Cost Status') }}</th>
                             @if (addon_is_activated('refund_request'))
                                 <th>{{ translate('Refund') }}</th>
                             @endif
@@ -222,7 +223,7 @@
                                             <i class="las la-trash"></i>
                                         </a>
                                     @endcan
-    
+
                                 </td>
                             </tr>
                         @endforeach
@@ -260,7 +261,7 @@
             }
 
         });
-        
+
         function bulk_delete() {
             var data = new FormData($('#sort_orders')[0]);
             $.ajax({
@@ -280,7 +281,7 @@
                 }
             });
         }
-        
+
         function order_bulk_export (){
             var url = '{{route('order-bulk-export')}}';
             $("#sort_orders").attr("action", url);
