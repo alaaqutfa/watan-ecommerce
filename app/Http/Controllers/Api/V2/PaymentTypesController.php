@@ -29,7 +29,7 @@ class PaymentTypesController
             $all_online_payment_methods = get_activate_payment_methods();
             if (count($all_online_payment_methods) > 0) {
                 $available_online_payment_methods = [
-                    "paypal", "stripe", "instamojo", "razorpay", "paystack", "iyzico", "bkash", "nagad", "sslcommerz", "aamarpay", "flutterwave", "payfast", "paytm", "khalti", "myfatoorah", "phonepe"
+                    "paypal", "stripe", "magnati", "telr", "instamojo", "razorpay", "paystack", "iyzico", "bkash", "nagad", "sslcommerz", "aamarpay", "flutterwave", "payfast", "paytm", "khalti", "myfatoorah", "phonepe"
                 ];
                 $online_payment_methods = $all_online_payment_methods->toQuery()->whereIn('name', $available_online_payment_methods)->get();
 
@@ -52,7 +52,7 @@ class PaymentTypesController
                 }
             }
 
-            /* if (get_setting('paypal_payment') == 1) {
+            if (get_setting('paypal_payment') == 1) {
                 $payment_type = array();
                 $payment_type['payment_type'] = 'paypal_payment';
                 $payment_type['payment_type_key'] = 'paypal';
@@ -83,6 +83,39 @@ class PaymentTypesController
 
                 $payment_types[] = $payment_type;
             }
+
+            if (get_setting('telr_payment') == 1) {
+                $payment_type = array();
+                $payment_type['payment_type'] = 'telr_payment';
+                $payment_type['payment_type_key'] = 'telr';
+                $payment_type['image'] = static_asset('assets/img/cards/telr.png');
+                $payment_type['name'] = "Telr";
+                $payment_type['title'] = translate("Checkout with Telr");
+                $payment_type['offline_payment_id'] = 0;
+                $payment_type['details'] = "";
+                if ($mode == 'wallet') {
+                    $payment_type['title'] = translate("Recharge with Telr");
+                }
+
+                $payment_types[] = $payment_type;
+            }
+
+            if (get_setting('magnati_payment') == 1) {
+                $payment_type = array();
+                $payment_type['payment_type'] = 'magnati_payment';
+                $payment_type['payment_type_key'] = 'magnati';
+                $payment_type['image'] = static_asset('assets/img/cards/magnati.png');
+                $payment_type['name'] = "Stripe";
+                $payment_type['title'] = translate("Checkout with Magnati");
+                $payment_type['offline_payment_id'] = 0;
+                $payment_type['details'] = "";
+                if ($mode == 'wallet') {
+                    $payment_type['title'] = translate("Recharge with Magnati");
+                }
+
+                $payment_types[] = $payment_type;
+            }
+
             if (get_setting('instamojo_payment') == 1) {
                 $payment_type = array();
                 $payment_type['payment_type'] = 'instamojo_payment';
@@ -304,7 +337,7 @@ class PaymentTypesController
 
                     $payment_types[] = $payment_type;
                 }
-            } */
+            }
         }
 
         // you cannot recharge wallet by wallet or cash payment
