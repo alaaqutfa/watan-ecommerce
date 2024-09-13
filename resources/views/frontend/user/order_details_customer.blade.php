@@ -264,7 +264,7 @@
             </div>
         </div>
         @if($order->shipping_cost_status )
-            @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 0)
+            @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 1)
             <button @if(addon_is_activated('offline_payment')) onclick="select_payment_type({{ $order->id }})" @else
                 onclick="online_payment({{ $order->id }})" @endif class="btn btn-block btn-primary">
                 {{ translate('Make Payment') }}
