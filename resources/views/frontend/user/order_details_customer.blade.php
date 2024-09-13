@@ -263,13 +263,16 @@
                 </table>
             </div>
         </div>
-        @if($order->shipping_cost_status )
-            @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 1)
-            <button @if(addon_is_activated('offline_payment')) onclick="select_payment_type({{ $order->id }})" @else
-                onclick="online_payment({{ $order->id }})" @endif class="btn btn-block btn-primary">
-                {{ translate('Make Payment') }}
-            </button>
-            @endif
+        <!-- Make Payment -->
+        @if ($order->shipping_cost_status && $order->payment_status == 'unpaid')
+            <form action="{{ route('order.re_payment') }}" method="post">
+                @csrf
+                <input type="hidden" name="order_id" value="{{ $order->id }}" />
+                <input type="hidden" name="payment_option" value="{{ $order->payment_type }}" />
+                <button type="submit" class="btn btn-block btn-primary">
+                    {{ translate('Make Payment') }}
+                </button>
+            </form>
         @endif
     </div>
 </div>
@@ -422,3 +425,4 @@
 
 </script>
 @endsection
+

@@ -133,7 +133,6 @@ class OrderController extends Controller
 
         $order->shipping_cost = $request->input('shipping_cost');
         $order->grand_total += $new_shipping_cost;
-        //shipping_cost_status
         $order->shipping_cost_status=1;
         $order->save(); 
 

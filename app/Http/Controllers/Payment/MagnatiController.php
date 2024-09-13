@@ -22,9 +22,9 @@ class MagnatiController extends Controller
         $user = auth()->user();
         $order = Order::where([['user_id', '=', $user->id], ['payment_status', '=', 'unpaid']], ['payment_type', '=', 'magnati'])->orderBy('created_at', 'desc')->latest()->first();
         // ! Prod
-        $send = "https://www.ipg-online.com/connect/gateway/processing";
+        // $send = "https://www.ipg-online.com/connect/gateway/processing";
         // ! Test
-        // $send = "https://test.ipg-online.com/connect/gateway/processing";
+        $send = "https://test.ipg-online.com/connect/gateway/processing";
         $storeId =  env('MAGNATI_STORE_NAME'); // NOTE: Please DO NOT hardcode the secret in that script. For example read it from a database.
         $sharedSecret = env('MAGNATI_SHARED_SECRET');
         $price = convert_price_aed($order->grand_total);
