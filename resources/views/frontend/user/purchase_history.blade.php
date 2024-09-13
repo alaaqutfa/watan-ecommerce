@@ -9,13 +9,13 @@
             <table class="table aiz-table mb-0">
                 <thead class="text-gray fs-12">
                     <tr>
-                        <th class="pl-0">{{ translate('Code')}}</th>
-                        <th data-breakpoints="md">{{ translate('Date')}}</th>
-                        <th>{{ translate('Amount')}}</th>
-                        <th data-breakpoints="md">{{ translate('Delivery Status')}}</th>
-                        <th data-breakpoints="md">{{ translate('Payment Status')}}</th>
+                        <th class="pl-0">{{ translate('Code') }}</th>
+                        <th data-breakpoints="md">{{ translate('Date') }}</th>
+                        <th>{{ translate('Amount') }}</th>
+                        <th data-breakpoints="md">{{ translate('Delivery Status') }}</th>
+                        <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
                         <th data-breakpoints="md">{{ translate('Shipping Cost Status') }}</th>
-                        <th class="text-right pr-0">{{ translate('Options')}}</th>
+                        <th class="text-center pr-0">{{ translate('Options') }}</th>
                     </tr>
                 </thead>
                 <tbody class="fs-14">
@@ -24,7 +24,8 @@
                             <tr>
                                 <!-- Code -->
                                 <td class="pl-0">
-                                    <a href="{{route('purchase_history.details', encrypt($order->id))}}">{{ $order->code }}</a>
+                                    <a
+                                        href="{{ route('purchase_history.details', encrypt($order->id)) }}">{{ $order->code }}</a>
                                 </td>
                                 <!-- Date -->
                                 <td class="text-secondary">{{ date('d-m-Y', $order->date) }}</td>
@@ -35,18 +36,20 @@
                                 <!-- Delivery Status -->
                                 <td class="fw-700">
                                     {{ translate(ucfirst(str_replace('_', ' ', $order->delivery_status))) }}
-                                    @if($order->delivery_viewed == 0)
+                                    @if ($order->delivery_viewed == 0)
                                         <span class="ml-2" style="color:green"><strong>*</strong></span>
                                     @endif
                                 </td>
                                 <!-- Payment Status -->
                                 <td>
                                     @if ($order->payment_status == 'paid')
-                                        <span class="badge badge-inline badge-success p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Paid')}}</span>
+                                        <span class="badge badge-inline badge-success p-3 fs-12"
+                                            style="border-radius: 25px; min-width: 80px !important;">{{ translate('Paid') }}</span>
                                     @else
-                                        <span class="badge badge-inline badge-danger p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Unpaid')}}</span>
+                                        <span class="badge badge-inline badge-danger p-3 fs-12"
+                                            style="border-radius: 25px; min-width: 80px !important;">{{ translate('Unpaid') }}</span>
                                     @endif
-                                    @if($order->payment_status_viewed == 0)
+                                    @if ($order->payment_status_viewed == 0)
                                         <span class="ml-2" style="color:green"><strong>*</strong></span>
                                     @endif
                                 </td>
@@ -56,9 +59,10 @@
                                     @if ($order->shipping_cost_status)
                                         <span class="badge badge-inline badge-success p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Modified')}}</span>
                                     @else
-                                        <span class="badge badge-inline badge-danger p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Not Modified')}}</span>
+                                        <span class="badge badge-inline badge-danger p-3 fs-12"
+                                            style="border-radius: 25px; min-width: 80px !important;">{{ translate('Not Modified') }}</span>
                                     @endif
-                                    @if($order->payment_status_viewed == 0)
+                                    @if ($order->payment_status_viewed == 0)
                                         <span class="ml-2" style="color:green"><strong>*</strong></span>
                                     @endif
                                 </td>
@@ -165,11 +169,10 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('modal')
     <!-- Delete modal -->
     @include('modals.delete_modal')
-
 @endsection
-
