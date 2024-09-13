@@ -6,7 +6,7 @@ use App\Http\Middleware\EnsureSystemKey;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v2/auth', 'middleware' => ['app_language']], function () {
-    
+
     Route::post('info', [AuthController::class, 'getUserInfoByAccessToken']);
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login');
@@ -97,7 +97,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         Route::post('update-address-in-cart', 'updateAddressInCart');
         Route::post('update-shipping-type-in-cart', 'updateShippingTypeInCart');
     });
-    
+
     Route::get('payment-types', [PaymentTypesController::class, 'getList']);
 
 
@@ -142,7 +142,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         // review
         Route::post('reviews/submit', [ReviewController::class, 'submit'])->name('api.reviews.submit')->middleware('auth:sanctum');
         Route::get('shop/user/{id}', [ShopController::class, 'shopOfUser'])->middleware('auth:sanctum');
-        
+
         //Follow
         Route::controller(FollowSellerController::class)->group(function () {
             Route::get('/followed-seller', 'index')->middleware('auth:sanctum');
@@ -216,7 +216,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
             Route::post('notifications/bulk-delete', 'bulkDelete')->middleware('auth:sanctum');
             Route::get('notifications/mark-as-read', 'notificationMarkAsRead')->middleware('auth:sanctum');
         });
-        
+
         Route::get('products/last-viewed',[ProductController::class, 'lastViewedProducts'])->middleware('auth:sanctum');
     });
 
@@ -237,7 +237,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         Route::get('classified/product-details/{slug}', 'productDetails');
     });
 
-    
+
     Route::get('seller/top', 'App\Http\Controllers\Api\V2\SellerController@topSellers');
 
     Route::apiResource('banners', 'App\Http\Controllers\Api\V2\BannerController')->only('index');
@@ -335,6 +335,9 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
     Route::any('stripe', 'App\Http\Controllers\Api\V2\StripeController@stripe');
     Route::any('stripe/payment/callback', 'App\Http\Controllers\Api\V2\StripeController@callback')->name('api.stripe.callback');
 
+    Route::any('telr','App\Http\Controllers\Api\V2\TelrController@telr');
+
+    Route::any('magnati','App\Http\Controllers\Api\V2\MagnatiController@magnati');
 
     Route::any('paypal/payment/url', 'App\Http\Controllers\Api\V2\PaypalController@getUrl')->name('api.paypal.url');
     Route::any('amarpay', [AamarpayController::class, 'pay'])->name('api.amarpay.url');
@@ -409,6 +412,13 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         Route::get('stripe/success', 'App\Http\Controllers\Api\V2\StripeController@payment_success');
         Route::any('stripe/cancel', 'App\Http\Controllers\Api\V2\StripeController@cancel')->name('api.stripe.cancel');
 
+        Route::any('telr/create-checkout-session', 'App\Http\Controllers\Api\V2\TelrController@create_checkout_session')->name('api.telr.get_token');
+        Route::get('telr/success', 'App\Http\Controllers\Api\V2\TelrController@payment_success')->name('api.telr.success');
+        Route::any('telr/cancel', 'App\Http\Controllers\Api\V2\TelrController@cancel')->name('api.telr.cancel');
+
+        Route::get('magnati/success', 'App\Http\Controllers\Api\V2\MagnatiController@payment_success')->name('api.magnati.success');
+        Route::any('magnati/cancel', 'App\Http\Controllers\Api\V2\MagnatiController@cancel')->name('api.magnati.cancel');
+
         Route::any('sslcommerz/success', 'App\Http\Controllers\Api\V2\SslCommerzController@payment_success');
         Route::any('sslcommerz/fail', 'App\Http\Controllers\Api\V2\SslCommerzController@payment_fail');
         Route::any('sslcommerz/cancel', 'App\Http\Controllers\Api\V2\SslCommerzController@payment_cancel');
@@ -440,7 +450,6 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         Route::get('file/delete/{id}', 'destroy');
     });
 });
-
 Route::fallback(function () {
     return response()->json([
         'data' => [],

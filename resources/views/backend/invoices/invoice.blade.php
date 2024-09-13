@@ -228,7 +228,7 @@
 									</tr>
 									<tr>
 										<th class="gry-color text-left">{{ translate('Shipping Cost') }}</th>
-										<td class="currency">{{ single_price($order->orderDetails->sum('shipping_cost'))
+										<td class="currency">{{ single_price($order->shipping_cost)
 											}}</td>
 									</tr>
 									<tr class="border-bottom">
