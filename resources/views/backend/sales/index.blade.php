@@ -169,7 +169,7 @@
                                 </td>
 
                                 <td>
-                                    @if ($order->orderDetails->sum('shipping_cost') > 0)
+                                    @if ($order->shipping_cost_status)
                                         <span class="badge badge-inline badge-success">{{ translate('Modified') }}</span>
                                     @else
                                         <span class="badge badge-inline badge-danger">{{ translate('Not Modified') }}</span>

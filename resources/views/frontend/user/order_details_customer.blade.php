@@ -236,7 +236,9 @@
                         <tr>
                             <td class="w-50 fw-600">{{ translate('Shipping') }}</td>
                             <td class="text-right">
-                                <span class="text-italic">{{ single_price($order->orderDetails->first()->shipping_cost)
+                                {{-- <span class="text-italic">{{ single_price($order->orderDetails->first()->shipping_cost) --}}
+
+                                <span class="text-italic">{{ single_price($order->shipping_cost)
                                     }}</span>
                             </td>
                         </tr>
