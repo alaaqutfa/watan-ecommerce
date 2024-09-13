@@ -209,7 +209,8 @@ if (!function_exists('convert_price_aed')) {
             $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
             $price = floatval($price) * floatval(env('Aed_Exchange_Rate'));
         }
-        return number_format($price,2);
+        $price = number_format($price,2);
+        return str_replace(",","",$price);
     }
 }
 
