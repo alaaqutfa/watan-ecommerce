@@ -197,7 +197,7 @@ if (!function_exists('convert_price')) {
             $price = floatval($price) / floatval(get_system_default_currency()->exchange_rate);
             $price = floatval($price) * floatval(request()->header('Currency-Exchange-Rate'));
         }
-        return number_format($price,2);
+        return $price;
     }
 }
 
