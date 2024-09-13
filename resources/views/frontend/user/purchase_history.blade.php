@@ -53,7 +53,7 @@
 
                                 <!-- Shipping Cost Status -->
                                 <td>
-                                    @if ($order->orderDetails->first()->shipping_cost > 0)
+                                    @if ($order->shipping_cost_status)
                                         <span class="badge badge-inline badge-success p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Modified')}}</span>
                                     @else
                                         <span class="badge badge-inline badge-danger p-3 fs-12" style="border-radius: 25px; min-width: 80px !important;">{{translate('Not Modified')}}</span>

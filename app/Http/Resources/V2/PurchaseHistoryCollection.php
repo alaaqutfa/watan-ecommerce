@@ -32,6 +32,7 @@ class PurchaseHistoryCollection extends ResourceCollection
                     'grand_total' => format_price(convert_price($data->grand_total)),
                     'plane_grand_total' => $data->grand_total,
                     'coupon_discount' => format_price(convert_price($data->coupon_discount)),
+                    //'shipping_cost' => format_price(convert_price($data->orderDetails->sum('shipping_cost'))),
                     'shipping_cost' => format_price(convert_price($data->orderDetails->sum('shipping_cost'))),
                     'subtotal' => format_price(convert_price($data->orderDetails->sum('price'))),
                     'tax' => format_price(convert_price($data->orderDetails->sum('tax'))),

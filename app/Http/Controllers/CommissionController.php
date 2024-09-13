@@ -125,6 +125,7 @@ class CommissionController extends Controller
                         $seller_earning = ($orderDetail->tax + $orderDetail->price) - $admin_commission;
                         $seller->admin_to_pay += $seller_earning;
                     } else {
+                        //$seller_earning = ($orderDetail->tax + $orderDetail->shipping_cost + $orderDetail->price) - $admin_commission;
                         $seller_earning = ($orderDetail->tax + $orderDetail->shipping_cost + $orderDetail->price) - $admin_commission;
                         $seller->admin_to_pay -= $admin_commission;
                     }

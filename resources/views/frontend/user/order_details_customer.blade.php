@@ -236,7 +236,9 @@
                         <tr>
                             <td class="w-50 fw-600">{{ translate('Shipping') }}</td>
                             <td class="text-right">
-                                <span class="text-italic">{{ single_price($order->orderDetails->first()->shipping_cost)
+                                {{-- <span class="text-italic">{{ single_price($order->orderDetails->first()->shipping_cost) --}}
+
+                                <span class="text-italic">{{ single_price($order->shipping_cost)
                                     }}</span>
                             </td>
                         </tr>
@@ -261,7 +263,7 @@
                 </table>
             </div>
         </div>
-        @if($order->orderDetails->first()->shipping_cost > 0)
+        @if($order->shipping_cost_status )
             @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 0)
             <button @if(addon_is_activated('offline_payment')) onclick="select_payment_type({{ $order->id }})" @else
                 onclick="online_payment({{ $order->id }})" @endif class="btn btn-block btn-primary">
