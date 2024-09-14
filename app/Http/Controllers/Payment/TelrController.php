@@ -40,7 +40,7 @@ class TelrController extends Controller
         $authKey = env('TELR_AUTHENTICATION_KEY');
         // ! Prod
         $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-            'body' => '{"method":"create","store":"' . $storeId . '","authkey":"' . $authKey . '","framed":"0","order":{"cartid":"' . $request->code . '","test":"0","amount":"' . $request->ammount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+            'body' => '{"method":"create","store":"' . $storeId . '","authkey":"' . $authKey . '","framed":"0","order":{"cartid":"' . $request->code . '","test":"0","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
             'headers' => [
                 'Content-Type' => 'application/json',
                 'accept' => 'application/json',
@@ -48,7 +48,7 @@ class TelrController extends Controller
         ]);
         // ! Test
         // $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-        //     'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->ammount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"customer":{"email":"'.$info["email"].'","phone":"'.$info["phone"].'","name":{"title":"'.$info["name"].'","forenames":"'.$info["name"].'","surname":"'.$info["name"].'"},"address":{"line1":"'.$info["address"].'","line2":"'.$info["address"].'","line3":"'.$info["address"].'","city":"'.$info["city"].'","state":"'.$info["city"].'","country":"'.$info["country"].'","areacode":"'.$info["postal_code"].'"},"ref":"'.$request->combined_order_id.'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+        //     'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"customer":{"email":"'.$info["email"].'","phone":"'.$info["phone"].'","name":{"title":"'.$info["name"].'","forenames":"'.$info["name"].'","surname":"'.$info["name"].'"},"address":{"line1":"'.$info["address"].'","line2":"'.$info["address"].'","line3":"'.$info["address"].'","city":"'.$info["city"].'","state":"'.$info["city"].'","country":"'.$info["country"].'","areacode":"'.$info["postal_code"].'"},"ref":"'.$request->combined_order_id.'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
         //     'headers' => [
         //         'Content-Type' => 'application/json',
         //         'accept' => 'application/json',
