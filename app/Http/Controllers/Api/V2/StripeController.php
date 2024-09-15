@@ -24,11 +24,10 @@ class StripeController extends Controller
         $data['user_id'] = $request->user_id;
         $data['package_id'] = 0;
 
-
         if(isset($request->package_id)) {
             $data['package_id'] = $request->package_id;
         }
-        
+
         return view('frontend.payment.stripe_app', $data);
     }
 
@@ -87,12 +86,12 @@ class StripeController extends Controller
     public function payment_success(Request $request)
     {
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        
+
         try {
             $session = $stripe->checkout->sessions->retrieve($request->session_id);
-            
+
             $decoded_reference_data = json_decode($session->client_reference_id);
-            
+
             $payment = ["status" => "Success"];
 
             $payment_type = $decoded_reference_data->payment_type;

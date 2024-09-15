@@ -1,69 +1,65 @@
 <?php
 
-namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\CheckoutController;
-use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Http\Controllers\CustomerPackageController;
-use App\Http\Controllers\SellerPackageController;
-use Session;
 
 class MagnatiController extends Controller
 {
 
     public function magnati(Request $request)
     {
-        $user = auth()->user();
-        $order = Order::where([['user_id', '=', $user->id], ['payment_status', '=', 'unpaid']], ['payment_type', '=', 'magnati'])->orderBy('created_at', 'desc')->latest()->first();
         // ! Prod
-        $send = "https://www.ipg-online.com/connect/gateway/processing";
+        // $send = "https://www.ipg-online.com/connect/gateway/processing";
         // ! Test
-        // $send = "https://test.ipg-online.com/connect/gateway/processing";
-        $storeId =  env('MAGNATI_STORE_NAME'); // NOTE: Please DO NOT hardcode the secret in that script. For example read it from a database.
+        $send = "https://test.ipg-online.com/connect/gateway/processing";
+        $storeId = env('MAGNATI_STORE_NAME');
         $sharedSecret = env('MAGNATI_SHARED_SECRET');
-        $price = convert_price_aed($order->grand_total);
+        $price = convert_price_aed($request->amount);
         date_default_timezone_set('Asia/Dubai');
         $dateTime = date("Y:m:d-H:i:s");
         $stringToHash = $storeId . $dateTime . $price . "784" . $sharedSecret;
         $ascii = bin2hex($stringToHash);
         $hash = hash("sha256", $ascii);
-        // Timezeone needs to be set
-        return view('frontend.payment.magnati', compact('order', 'dateTime', 'hash', 'price', 'send'));
+        $combined_order_id = $request->combined_order_id;
+        $data = array();
+        $data['payment_type'] = $request->payment_type;
+        $data['order_id'] = $request->order_id;
+        $data['user_id'] = $request->user_id;
+        $data['package_id'] = $request->package_id;
+        $session = json_encode($data);
+        return view('frontend.payment.magnati_app', compact('combined_order_id', 'dateTime', 'hash', 'price', 'send', 'session'));
     }
 
     public function payment_success(Request $request)
     {
         try {
-            $payment = ["status" => "Success"];
-            $payment_type = Session::get('payment_type');
-            $paymentData = session()->get('payment_data');
-            if ($payment_type == 'cart_payment') {
-                return (new CheckoutController)->checkout_done($request->oid, json_encode($payment));
+            if ($request->status == "APPROVED") {
+                $session = json_decode($request->customParam_token);
+                $payment = ["status" => "Success"];
+                $payment_type = $session->payment_type;
+                if ($payment_type == 'cart_payment') {
+                    checkout_done($request->oid, json_encode($payment));
+                } elseif ($payment_type == 'order_re_payment') {
+                    order_re_payment_done($session->order_id, 'Magnati', json_encode($payment));
+                } elseif ($payment_type == 'wallet_payment') {
+                    wallet_payment_done($session->user_id, $request->chargetotal, 'Magnati', json_encode($payment));
+                } elseif ($payment_type == 'seller_package_payment') {
+                    seller_purchase_payment_done($session->user_id, $session->package_id, 'Magnati', json_encode($payment));
+                } elseif ($payment_type == 'customer_package_payment') {
+                    customer_purchase_payment_done($session->user_id, $session->package_id, 'Magnati', json_encode($payment));
+                }
+                return response()->json(['result' => true, 'message' => translate("Payment is successful")]);
+            } else {
+                return response()->json(['result' => false, 'message' => translate("Payment is failed")]);
             }
-            else if ($payment_type == 'order_re_payment') {
-                return (new CheckoutController)->orderRePaymentDone($paymentData, json_encode($payment));
-            }
-            else if ($payment_type == 'wallet_payment') {
-                return (new WalletController)->wallet_payment_done($paymentData, json_encode($payment));
-            }
-            else if ($payment_type == 'customer_package_payment') {
-                return (new CustomerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-            }
-            else if ($payment_type == 'seller_package_payment') {
-                return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-            }
-        }
-        catch (\Exception $e) {
-            flash(translate('Payment failed'))->error();
-            return redirect()->route('home');
+        } catch (\Exception $e) {
+            return response()->json(['result' => false, 'message' => translate("Payment is failed")]);
         }
     }
-
     public function cancel()
     {
-        flash(translate('Payment is cancelled'))->error();
-        return redirect()->route('home');
+        return response()->json(['result' => false, 'message' => translate("Payment is cancelled")]);
     }
 }

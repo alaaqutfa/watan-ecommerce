@@ -416,7 +416,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         Route::get('telr/success', 'App\Http\Controllers\Api\V2\TelrController@payment_success')->name('api.telr.success');
         Route::any('telr/cancel', 'App\Http\Controllers\Api\V2\TelrController@cancel')->name('api.telr.cancel');
 
-        Route::get('magnati/success', 'App\Http\Controllers\Api\V2\MagnatiController@payment_success')->name('api.magnati.success');
+        Route::post('magnati/success', 'App\Http\Controllers\Api\V2\MagnatiController@payment_success')->name('api.magnati.success');
         Route::any('magnati/cancel', 'App\Http\Controllers\Api\V2\MagnatiController@cancel')->name('api.magnati.cancel');
 
         Route::any('sslcommerz/success', 'App\Http\Controllers\Api\V2\SslCommerzController@payment_success');

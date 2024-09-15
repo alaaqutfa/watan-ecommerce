@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CheckoutController;
@@ -15,9 +15,13 @@ class TelrController extends Controller
 {
     public function telr(Request $request)
     {
-        $user = auth()->user();
-        $order = Order::where([['user_id', '=', $user->id], ['payment_status', '=', 'unpaid']])->orderBy('created_at', 'desc')->latest()->first();
-        return view('frontend.payment.telr', compact('order'));
+        $order = Order::where([['user_id', '=', $request->user_id], ['payment_status', '=', 'unpaid'],['combined_order_id','=',$request->combined_order_id]])->orderBy('created_at', 'desc')->latest()->first();
+        $data['payment_type'] = $request->payment_type;
+        $data['combined_order_id'] = $request->combined_order_id;
+        $data['amount'] = $request->amount;
+        $data['user_id'] = $request->user_id;
+        $data['package_id'] = 0;
+        return view('frontend.payment.telr_app', compact('order','data'));
     }
 
     public function create_checkout_session(Request $request)
@@ -34,35 +38,62 @@ class TelrController extends Controller
         $storeId = env('TELR_STORE_ID');
         $authKey = env('TELR_AUTHENTICATION_KEY');
         // ! Prod
-        $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-            'body' => '{"method":"create","store":"' . $storeId . '","authkey":"' . $authKey . '","framed":"0","order":{"cartid":"' . $request->code . '","test":"0","amount":"' . $request->ammount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'accept' => 'application/json',
-            ],
-        ]);
-        // ! Test
         // $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-        //     'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->ammount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"customer":{"email":"'.$info["email"].'","phone":"'.$info["phone"].'","name":{"title":"'.$info["name"].'","forenames":"'.$info["name"].'","surname":"'.$info["name"].'"},"address":{"line1":"'.$info["address"].'","line2":"'.$info["address"].'","line3":"'.$info["address"].'","city":"'.$info["city"].'","state":"'.$info["city"].'","country":"'.$info["country"].'","areacode":"'.$info["postal_code"].'"},"ref":"'.$request->combined_order_id.'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+        //     'body' => '{"method":"create","store":"' . $storeId . '","authkey":"' . $authKey . '","framed":"0","order":{"cartid":"' . $request->code . '","test":"0","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
         //     'headers' => [
         //         'Content-Type' => 'application/json',
         //         'accept' => 'application/json',
         //     ],
         // ]);
+        // ! Test
+        $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
+            'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"customer":{"email":"'.$info["email"].'","phone":"'.$info["phone"].'","name":{"title":"'.$info["name"].'","forenames":"'.$info["name"].'","surname":"'.$info["name"].'"},"address":{"line1":"'.$info["address"].'","line2":"'.$info["address"].'","line3":"'.$info["address"].'","city":"'.$info["city"].'","state":"'.$info["city"].'","country":"'.$info["country"].'","areacode":"'.$info["postal_code"].'"},"ref":"'.$request->combined_order_id.'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'accept' => 'application/json',
+            ],
+        ]);
+        $data = array();
+        $data['payment_type'] = $request->payment_type;
+        $data['combined_order_id'] = $request->combined_order_id;
+        $data['order_id'] = $request->order_id;
+        $data['amount'] = $request->amount;
+        $data['user_id'] = $request->user_id;
+        $data['package_id'] = $request->package_id;
         $body = json_decode($response->getBody());
         if(isset($body->order)){
-            session(['ref' => $body->order->ref]);
+            $session = [
+                'payment_method_types' => ['card'],
+                'line_items' => [
+                    [
+                        'price_data' => [
+                            'currency' => 'AED',
+                            'product_data' => [
+                                'name' => "Payment"
+                            ],
+                            'unit_amount' => $request->amount,
+                        ],
+                        'quantity' => 1,
+                    ]
+                ],
+                'mode' => 'payment',
+                'client_reference_id' => json_encode($data),
+                'ref' => $body->order->ref,
+                'success_url' => route('api.telr.success'),
+                'cancel_url' => route('api.telr.cancel'),
+            ];
         }
-        echo $response->getBody();
+        return response()->json(['data' => $session, 'status' => 200]);
     }
 
     public function payment_success(Request $request)
     {
         try {
+            $session = $request->data;
             $payment = ["status" => "Success"];
-            $ref = Session::get('ref');
-            $payment_type = Session::get('payment_type');
-            $paymentData = session()->get('payment_data');
+            $decoded_reference_data = json_decode($session['client_reference_id']);
+            $payment_type = $decoded_reference_data->payment_type;
+            $ref = $session['ref'];
             require_once('vendor/autoload.php');
             $client = new \GuzzleHttp\Client();
             $storeId = env('TELR_STORE_ID');
@@ -79,34 +110,28 @@ class TelrController extends Controller
             $statusCode = $data->order->status->code;
             if($statusText == 'Paid' && $statusCode == 3) {
                 if ($payment_type == 'cart_payment') {
-                    return (new CheckoutController)->checkout_done(session()->get('combined_order_id'), json_encode($payment));
+                    checkout_done($decoded_reference_data->combined_order_id, json_encode($payment));
+                } elseif ($payment_type == 'order_re_payment') {
+                    order_re_payment_done($decoded_reference_data->order_id, 'Telr', json_encode($payment));
+                } elseif ($payment_type == 'wallet_payment') {
+                    wallet_payment_done($decoded_reference_data->user_id, $decoded_reference_data->amount, 'Telr', json_encode($payment));
+                } elseif ($payment_type == 'seller_package_payment') {
+                    seller_purchase_payment_done($decoded_reference_data->user_id, $decoded_reference_data->package_id, 'Telr', json_encode($payment));
+                } elseif ($payment_type == 'customer_package_payment') {
+                    customer_purchase_payment_done($decoded_reference_data->user_id, $decoded_reference_data->package_id, 'Telr', json_encode($payment));
                 }
-                else if ($payment_type == 'order_re_payment') {
-                    return (new CheckoutController)->orderRePaymentDone($paymentData, json_encode($payment));
-                }
-                else if ($payment_type == 'wallet_payment') {
-                    return (new WalletController)->wallet_payment_done($paymentData, json_encode($payment));
-                }
-                else if ($payment_type == 'customer_package_payment') {
-                    return (new CustomerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-                }
-                else if ($payment_type == 'seller_package_payment') {
-                    return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-                }
+                return response()->json(['result' => true, 'message' => translate("Payment is successful")]);
             } else {
-                flash(translate('Payment failed'))->error();
-                return redirect()->route('home');
+                return response()->json(['result' => false, 'message' => translate("Payment is failed")]);
             }
         }
         catch (\Exception $e) {
-            flash(translate('Payment failed'))->error();
-            return redirect()->route('home');
+            return response()->json(['result' => false, 'message' => translate("Payment is failed")]);
         }
     }
 
     public function cancel(Request $request)
     {
-        flash(translate('Payment is cancelled'))->error();
-        return redirect()->route('home');
+        return response()->json(['result' => false, 'message' => translate("Payment is cancelled")]);
     }
 }

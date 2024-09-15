@@ -1,4 +1,4 @@
-@php($price = convert_price_aed($order->grand_total))
+@php($price = convert_price_aed($data['amount']))
 <html>
 
 <head>
@@ -69,7 +69,10 @@
             code: "{{ $order->code }}",
             amount: "{{ $price }}",
             info,
-            combined_order_id
+            combined_order_id,
+            user_id: "{{ $data['user_id'] }}",
+            payment_type: "{{ $data['payment_type'] }}",
+            package_id: "{{ $data['package_id'] }}",
         };
         $.ajaxSetup({
             headers: {
@@ -79,16 +82,18 @@
             }
         });
         $.ajax({
-            url: "{{ route('telr.get_token') }}",
+            url: "{{ route('api.telr.get_token') }}",
             method: "POST",
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function(data) {
                 var res = JSON.parse(data);
-                $('#telrPay').attr('href', res['order']['url']);
-                setTimeout(() => {
-                    document.getElementById("telrPay").click();
-                }, 1000);
+                console.log(res);
+
+                // $('#telrPay').attr('href', res['order']['url']);
+                // setTimeout(() => {
+                //     document.getElementById("telrPay").click();
+                // }, 1000);
             },
             error: function(errMsg) {
                 console.log(errMsg);
