@@ -62,11 +62,15 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script type="text/javascript">
-        var combined_order_id = {{ $order->combined_order_id }};
-        var DBdesc = "{{ $order->shipping_address }}";
+        var combined_order_id = "{{ $data['combined_order_id'] }}";
+        @isset($order)
+            var DBdesc = "{{ $order->shipping_address }}";
+        @else
+            var DBdesc = "";
+        @endisset
         var info = DBdesc.replaceAll("&quot;", '"');
         var data = {
-            code: "{{ $order->code }}",
+            code: "{{ $data['combined_order_id'] }}",
             amount: "{{ $price }}",
             info,
             combined_order_id,
@@ -87,13 +91,12 @@
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function(data) {
-                var res = JSON.parse(data);
-                console.log(res);
-
-                // $('#telrPay').attr('href', res['order']['url']);
-                // setTimeout(() => {
-                //     document.getElementById("telrPay").click();
-                // }, 1000);
+                if(data['status'] == 200) {
+                    $('#telrPay').attr('href', data['data']['order']['url']);
+                    setTimeout(() => {
+                        document.getElementById("telrPay").click();
+                    }, 1000);
+                }
             },
             error: function(errMsg) {
                 console.log(errMsg);
