@@ -30,10 +30,14 @@ class TelrController extends Controller
         $reqInfo = $request->info;
         $JDONinfo = json_decode($reqInfo,true);
         $info = array();
-        foreach ($JDONinfo as $key => $value) {
-            $info[$key] = $value;
+        if(isset($JDONinfo)){
+            foreach ($JDONinfo as $key => $value) {
+                $info[$key] = $value;
+            }
+            $desc = "Name: ".$info['name'].". \n Email: ".$info['email']." \n Phone: ".$info['phone'];
+        } else {
+            $desc = "";
         }
-        $desc = "Name: ".$info['name'].". \n Email: ".$info['email']." \n Phone: ".$info['phone'];
         require_once 'vendor/autoload.php';
         $client = new \GuzzleHttp\Client();
         $storeId = env('TELR_STORE_ID');
@@ -48,7 +52,7 @@ class TelrController extends Controller
         ]);
         // ! Test
         // $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-        //     'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"customer":{"email":"'.$info["email"].'","phone":"'.$info["phone"].'","name":{"title":"'.$info["name"].'","forenames":"'.$info["name"].'","surname":"'.$info["name"].'"},"address":{"line1":"'.$info["address"].'","line2":"'.$info["address"].'","line3":"'.$info["address"].'","city":"'.$info["city"].'","state":"'.$info["city"].'","country":"'.$info["country"].'","areacode":"'.$info["postal_code"].'"},"ref":"'.$request->combined_order_id.'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+        //     'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("telr.success").'","declined":"'.route("telr.cancel").'","cancelled":"'.route("telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
         //     'headers' => [
         //         'Content-Type' => 'application/json',
         //         'accept' => 'application/json',
@@ -95,9 +99,9 @@ class TelrController extends Controller
                 else if ($payment_type == 'customer_package_payment') {
                     return (new CustomerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
                 }
-                else if ($payment_type == 'seller_package_payment') {
-                    return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-                }
+                // else if ($payment_type == 'seller_package_payment') {
+                //     return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
+                // }
             } else {
                 flash(translate('Payment failed'))->error();
                 return redirect()->route('home');

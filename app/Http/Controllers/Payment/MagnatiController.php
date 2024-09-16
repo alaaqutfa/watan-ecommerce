@@ -55,9 +55,9 @@ class MagnatiController extends Controller
             else if ($payment_type == 'customer_package_payment') {
                 return (new CustomerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
             }
-            else if ($payment_type == 'seller_package_payment') {
-                return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-            }
+            // else if ($payment_type == 'seller_package_payment') {
+            //     return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
+            // }
         }
         catch (\Exception $e) {
             flash(translate('Payment failed'))->error();

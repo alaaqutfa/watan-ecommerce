@@ -114,7 +114,7 @@ class StripeController extends Controller
     public function success(Request $request)
     {
         $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
-        
+
         try {
             $session = $stripe->checkout->sessions->retrieve($request->session_id);
             $payment = ["status" => "Success"];
@@ -134,9 +134,9 @@ class StripeController extends Controller
                 else if ($payment_type == 'customer_package_payment') {
                     return (new CustomerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
                 }
-                else if ($payment_type == 'seller_package_payment') {
-                    return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
-                }
+                // else if ($payment_type == 'seller_package_payment') {
+                //     return (new SellerPackageController)->purchase_payment_done($paymentData, json_encode($payment));
+                // }
             } else {
                 flash(translate('Payment failed'))->error();
                 return redirect()->route('home');

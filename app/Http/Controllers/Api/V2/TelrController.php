@@ -33,16 +33,10 @@ class TelrController extends Controller
             foreach ($JDONinfo as $key => $value) {
                 $info[$key] = $value;
             }
+            $desc = "Name: ".$info['name'].". \n Email: ".$info['email']." \n Phone: ".$info['phone'];
         } else {
-            $info['name'] = '';
-            $info['email'] = '';
-            $info['phone'] = '';
-            $info['address'] = '';
-            $info['city'] = '';
-            $info['country'] = '';
-            $info['postal_code'] = '';
+            $desc = "";
         }
-        $desc = "Name: ".$info['name'].". \n Email: ".$info['email']." \n Phone: ".$info['phone'];
         require_once 'vendor/autoload.php';
         $client = new \GuzzleHttp\Client();
         $storeId = env('TELR_STORE_ID');
@@ -57,7 +51,7 @@ class TelrController extends Controller
         // ]);
         // ! Test
         $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-            'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("api.telr.success").'","declined":"'.route("api.telr.cancel").'","cancelled":"'.route("api.telr.cancel").'"},"customer":{"email":"'.$info["email"].'","phone":"'.$info["phone"].'","name":{"title":"'.$info["name"].'","forenames":"'.$info["name"].'","surname":"'.$info["name"].'"},"address":{"line1":"'.$info["address"].'","line2":"'.$info["address"].'","line3":"'.$info["address"].'","city":"'.$info["city"].'","state":"'.$info["city"].'","country":"'.$info["country"].'","areacode":"'.$info["postal_code"].'"},"ref":"'.$request->combined_order_id.'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+            'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("api.telr.success").'","declined":"'.route("api.telr.cancel").'","cancelled":"'.route("api.telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
             'headers' => [
                 'Content-Type' => 'application/json',
                 'accept' => 'application/json',
