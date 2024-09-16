@@ -147,7 +147,7 @@
                                     </span>
                                     <span class="flex-grow-1 pl-3 fw-700">{{ $carrier->name }}</span>
                                     <span class="flex-grow-1 pl-3 fw-600">{{ translate('Transit in').' '.$carrier->transit_time }}</span>
-                                    <span class="flex-grow-1 pl-4 pl-sm-3 fw-600 mt-2 mt-sm-0 text-sm-right">{{ single_price(carrier_base_price($carts, $carrier->id, $owner_id, $shipping_info)) }}</span>
+                                    {{-- <span class="flex-grow-1 pl-4 pl-sm-3 fw-600 mt-2 mt-sm-0 text-sm-right">{{ single_price(carrier_base_price($carts, $carrier->id, $owner_id, $shipping_info)) }}</span> --}}
                                 </span>
                             </label>
                         </div>
