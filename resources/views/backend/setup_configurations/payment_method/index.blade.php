@@ -3,26 +3,28 @@
     @section('content')
         <div class="row">
             @foreach ($payment_methods as $payment_method)
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <img class="mr-3" src="{{ static_asset('assets/img/cards/'.$payment_method->name.'.png') }}" height="30">
-                            <h5 class="mb-0 h6">{{ ucfirst(translate($payment_method->name)) }}</h5>
+                @if ($payment_method->name == 'telr' || $payment_method->name == 'magnati')
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <img class="mr-3" src="{{ static_asset('assets/img/cards/'.$payment_method->name.'.png') }}" height="30">
+                                    <h5 class="mb-0 h6">{{ ucfirst(translate($payment_method->name)) }}</h5>
+                                </div>
+                                <label class="aiz-switch aiz-switch-success mb-0 float-right">
+                                    <input type="checkbox" onchange="updatePaymentSettings(this, {{ $payment_method->id }},1)" @if ($payment_method->active == 1) checked @endif>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                @include('backend.setup_configurations.payment_method.partials.'.$payment_method->name)
+                            </div>
                         </div>
-                        <label class="aiz-switch aiz-switch-success mb-0 float-right">
-                            <input type="checkbox" onchange="updatePaymentSettings(this, {{ $payment_method->id }})" @if ($payment_method->active == 1) checked @endif>
-                            <span class="slider round"></span>
-                        </label>
                     </div>
-                    <div class="card-body">
-                        @include('backend.setup_configurations.payment_method.partials.'.$payment_method->name)
-                    </div>
-                </div>
-            </div>
+                @endif
             @endforeach
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 d-none">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
@@ -37,15 +39,11 @@
                 </div>
             </div>
         </div>
-        @php
-            // $demo_mode = env('DEMO_MODE') == 'On' ? true : false;
-        @endphp
     @endsection
 
     @section('script')
         <script type="text/javascript">
-            function updatePaymentSettings(el, id) {
-
+            function updatePaymentSettings(el, id,submit=1) {
                 if('{{env('DEMO_MODE')}}' == 'On'){
                     AIZ.plugins.notify('info', '{{ translate('Data can not change in demo mode.') }}');
                     return;
@@ -57,17 +55,22 @@
                     var value = 0;
                 }
 
-                $.post('{{ route('payment.activation') }}', {
-                    _token: '{{ csrf_token() }}',
-                    id: id,
-                    value: value
-                }, function(data) {
-                    if (data == 1) {
-                        AIZ.plugins.notify('success', '{{ translate('Payment Settings updated successfully') }}');
-                    } else {
-                        AIZ.plugins.notify('danger', 'Something went wrong');
-                    }
-                });
+                if(submit){
+                    $.post('{{ route('payment.activation') }}', {
+                        _token: '{{ csrf_token() }}',
+                        id: id,
+                        value: value
+                    }, function(data) {
+                        if (data == 1) {
+                            AIZ.plugins.notify('success', '{{ translate('Payment Settings updated successfully') }}');
+                        } else {
+                            AIZ.plugins.notify('danger', 'Something went wrong');
+                        }
+                    });
+                } else {
+                    document.querySelector("#"+id).value = value;
+                    console.log(document.querySelector("#"+id).value);
+                }
             }
 
             function updateSettings(el, type) {

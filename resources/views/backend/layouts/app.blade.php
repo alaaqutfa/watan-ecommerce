@@ -91,6 +91,9 @@
             border-top-right-radius: 4px !important;
             border-bottom-right-radius: 4px !important;
         }
+        .m-185 {
+            height: 185px;
+        }
     </style>
     <script>
         var AIZ = AIZ || {};

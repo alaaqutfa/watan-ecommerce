@@ -441,7 +441,7 @@ class BusinessSettingsController extends Controller
 
     public function updateActivationSettings(Request $request)
     {
-        $env_changes = ['FORCE_HTTPS', 'FILESYSTEM_DRIVER'];
+        $env_changes = ['FORCE_HTTPS', 'FILESYSTEM_DRIVER','MANUAL_PAYMENT'];
         if (in_array($request->type, $env_changes)) {
 
             return $this->updateActivationSettingsInEnv($request);
@@ -494,7 +494,7 @@ class BusinessSettingsController extends Controller
             if (strpos(env('APP_URL'), 'https:') !== FALSE) {
                 $this->overWriteEnvFile('APP_URL', str_replace("https:", "http:", env('APP_URL')));
             }
-        } elseif ($request->type == 'FILESYSTEM_DRIVER') {
+        } else {
             $this->overWriteEnvFile($request->type, $request->value);
         }
 

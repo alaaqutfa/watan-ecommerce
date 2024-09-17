@@ -357,15 +357,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         // All Orders
         Route::get('/all_orders', 'all_orders')->name('all_orders.index');
         Route::get('/inhouse-orders', 'all_orders')->name('inhouse_orders.index');
-      
+
         Route::get('/seller_orders', 'all_orders')->name('seller_orders.index');
         Route::get('orders_by_pickup_point', 'all_orders')->name('pick_up_point.index');
 
         Route::get('/orders/{id}/show', 'show')->name('all_orders.show');
-        // 
+        //
         Route::get('/orders/{id}/edit', 'orders_edit')->name('orders.edit');
         Route::get('/orders/{id}/update', 'orders_update')->name('order.update');
-        // 
+        //
         Route::get('/inhouse-orders/{id}/show', 'show')->name('inhouse_orders.show');
         Route::get('/seller_orders/{id}/show', 'show')->name('seller_orders.show');
         Route::get('/orders_by_pickup_point/{id}/show', 'show')->name('pick_up_point.order_show');
@@ -569,7 +569,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         Route::get('/custom-notifications.delete/{identifier}', 'customNotificationSingleDelete')->name('custom-notifications.delete');
         Route::post('/custom-notifications.bulk_delete', 'customNotificationBulkDelete')->name('custom-notifications.bulk_delete');
         Route::post('/custom-notified-customers-list', 'customNotifiedCustomersList')->name('custom_notified_customers_list');
-        
+
     });
 
     Route::resource('notification-type', NotificationTypeController::class);

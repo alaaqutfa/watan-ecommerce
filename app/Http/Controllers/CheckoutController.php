@@ -188,30 +188,45 @@ class CheckoutController extends Controller
         $request->session()->put('payment_data', $data);
         if ($request->session()->get('combined_order_id') != null) {
             // If block for Online payment, wallet and cash on delivery. Else block for Offline payment
-
-            // $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
-            // if (class_exists($decorator)) {
-            //     return (new $decorator)->pay($request);
-            // }
-            // else {
-            // }
-
-            $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
-            $manual_payment_data = array(
-                'name'   => $request->payment_option,
-                'amount' => $combined_order->grand_total,
-                'trx_id' => $request->trx_id,
-                'photo'  => $request->photo
-            );
-
-            foreach ($combined_order->orders as $order) {
-                $order->manual_payment = 1;
-                $order->manual_payment_data = json_encode($manual_payment_data);
-                $order->save();
+            $manual_payment = env('MANUAL_PAYMENT');
+            switch ($manual_payment) {
+                case 0:
+                    $decorator = __NAMESPACE__ . '\\Payment\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request->payment_option))) . "Controller";
+                    if (class_exists($decorator)) {
+                        return (new $decorator)->pay($request);
+                    }
+                    else {
+                        $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
+                        $manual_payment_data = array(
+                            'name'   => $request->payment_option,
+                            'amount' => $combined_order->grand_total,
+                            'trx_id' => $request->trx_id,
+                            'photo'  => $request->photo
+                        );
+                        foreach ($combined_order->orders as $order) {
+                            $order->manual_payment = 1;
+                            $order->manual_payment_data = json_encode($manual_payment_data);
+                            $order->save();
+                        }
+                        flash(translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)'))->warning();
+                    }
+                break;
+                default:
+                    $combined_order = CombinedOrder::findOrFail($request->session()->get('combined_order_id'));
+                    $manual_payment_data = array(
+                        'name'   => $request->payment_option,
+                        'amount' => $combined_order->grand_total,
+                        'trx_id' => $request->trx_id,
+                        'photo'  => $request->photo
+                    );
+                    foreach ($combined_order->orders as $order) {
+                        $order->manual_payment = 1;
+                        $order->manual_payment_data = json_encode($manual_payment_data);
+                        $order->save();
+                    }
+                    flash(translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)'))->warning();
             }
-            
             flash(translate('Your order has been placed successfully.'))->success();
-            flash(translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)'))->warning();
             return redirect()->route('order_confirmed');
         }
     }
