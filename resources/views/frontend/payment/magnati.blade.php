@@ -81,7 +81,7 @@
                     <input type="hidden" name="txndatetime" value="{{ $dateTime }}"/>
                     <input type="hidden" name="hash_algorithm" value="SHA256"/>
                     <input type="hidden" name="hash" value="{{ $hash }}"/>
-                    <input type="hidden" name="storename" value="{{ env('MAGNATI_STORE_NAME') }}"/>
+                    <input type="hidden" name="storename" value="{{ $storeId }}"/>
                     <input type="hidden" name="checkoutoption" value="combinedpage"/>
                     <input type="hidden" name="authenticateTransaction" value="true" />
                     <input type="hidden" name="chargetotal" value="{{ $price }}"/>

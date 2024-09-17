@@ -10,12 +10,17 @@ class MagnatiController extends Controller
 
     public function magnati(Request $request)
     {
-        // ! Prod
-        // $send = "https://www.ipg-online.com/connect/gateway/processing";
-        // ! Test
-        $send = "https://test.ipg-online.com/connect/gateway/processing";
-        $storeId = env('MAGNATI_STORE_NAME');
-        $sharedSecret = env('MAGNATI_SHARED_SECRET');
+        if(!env('MAGNATI_MODE')) {
+            // ! Prod
+            $send = "https://www.ipg-online.com/connect/gateway/processing";
+            $storeId = env('MAGNATI_STORE_NAME_PROD');
+            $sharedSecret = env('MAGNATI_SHARED_SECRET_PROD');
+        } else {
+            // ! Test
+            $send = "https://test.ipg-online.com/connect/gateway/processing";
+            $storeId = env('MAGNATI_STORE_NAME_TEST');
+            $sharedSecret = env('MAGNATI_SHARED_SECRET_TEST');
+        }
         $price = convert_price_aed($request->amount);
         date_default_timezone_set('Asia/Dubai');
         $dateTime = date("Y:m:d-H:i:s");
@@ -29,7 +34,7 @@ class MagnatiController extends Controller
         $data['user_id'] = $request->user_id;
         $data['package_id'] = $request->package_id;
         $session = json_encode($data);
-        return view('frontend.payment.magnati_app', compact('combined_order_id', 'dateTime', 'hash', 'price', 'send', 'session'));
+        return view('frontend.payment.magnati_app', compact('storeId','combined_order_id', 'dateTime', 'hash', 'price', 'send', 'session'));
     }
 
     public function payment_success(Request $request)

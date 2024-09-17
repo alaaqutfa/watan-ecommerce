@@ -41,17 +41,8 @@ class TelrController extends Controller
         $client = new \GuzzleHttp\Client();
         $storeId = env('TELR_STORE_ID');
         $authKey = env('TELR_AUTHENTICATION_KEY');
-        // ! Prod
-        // $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-        //     'body' => '{"method":"create","store":"' . $storeId . '","authkey":"' . $authKey . '","framed":"0","order":{"cartid":"' . $request->code . '","test":"0","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("api.telr.success").'","declined":"'.route("api.telr.cancel").'","cancelled":"'.route("api.telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
-        //     'headers' => [
-        //         'Content-Type' => 'application/json',
-        //         'accept' => 'application/json',
-        //     ],
-        // ]);
-        // ! Test
         $response = $client->request('POST', 'https://secure.telr.com/gateway/order.json', [
-            'body' => '{"method":"create","store":' . $storeId . ',"authkey":"' . $authKey . '","framed":1,"order":{"cartid":"' . $request->code . '","test":"1","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("api.telr.success").'","declined":"'.route("api.telr.cancel").'","cancelled":"'.route("api.telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
+            'body' => '{"method":"create","store":"' . $storeId . '","authkey":"' . $authKey . '","framed":"0","order":{"cartid":"' . $request->code . '","test":"'.env('TELR_MODE').'","amount":"' . $request->amount . '","currency":"AED","description":"' . $desc . '"},"return":{"authorised":"'.route("api.telr.success").'","declined":"'.route("api.telr.cancel").'","cancelled":"'.route("api.telr.cancel").'"},"extra":{"combined_order_id":"'.$request->combined_order_id.'"}}',
             'headers' => [
                 'Content-Type' => 'application/json',
                 'accept' => 'application/json',

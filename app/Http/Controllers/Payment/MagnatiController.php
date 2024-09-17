@@ -21,12 +21,17 @@ class MagnatiController extends Controller
     {
         $user = auth()->user();
         $order = Order::where([['user_id', '=', $user->id], ['payment_status', '=', 'unpaid']], ['payment_type', '=', 'magnati'])->orderBy('created_at', 'desc')->latest()->first();
-        // ! Prod
-        // $send = "https://www.ipg-online.com/connect/gateway/processing";
-        // ! Test
-        $send = "https://test.ipg-online.com/connect/gateway/processing";
-        $storeId =  env('MAGNATI_STORE_NAME'); // NOTE: Please DO NOT hardcode the secret in that script. For example read it from a database.
-        $sharedSecret = env('MAGNATI_SHARED_SECRET');
+        if(!env('MAGNATI_MODE')) {
+            // ! Prod
+            $send = "https://www.ipg-online.com/connect/gateway/processing";
+            $storeId =  env('MAGNATI_STORE_NAME_PROD'); // NOTE: Please DO NOT hardcode the secret in that script. For example read it from a database.
+            $sharedSecret = env('MAGNATI_SHARED_SECRET_PROD');
+        } else {
+            // ! Test
+            $send = "https://test.ipg-online.com/connect/gateway/processing";
+            $storeId =  env('MAGNATI_STORE_NAME_TEST'); // NOTE: Please DO NOT hardcode the secret in that script. For example read it from a database.
+            $sharedSecret = env('MAGNATI_SHARED_SECRET_TEST');
+        }
         $price = convert_price_aed($order->grand_total);
         date_default_timezone_set('Asia/Dubai');
         $dateTime = date("Y:m:d-H:i:s");
@@ -34,7 +39,7 @@ class MagnatiController extends Controller
         $ascii = bin2hex($stringToHash);
         $hash = hash("sha256", $ascii);
         // Timezeone needs to be set
-        return view('frontend.payment.magnati', compact('order', 'dateTime', 'hash', 'price', 'send'));
+        return view('frontend.payment.magnati', compact('storeId','order', 'dateTime', 'hash', 'price', 'send'));
     }
 
     public function success(Request $request)
