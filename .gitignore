@@ -30,4 +30,3 @@ install.zip
 /nbproject
 /public/app-translations
 public/uploads.zip
-/app/Http/Controllers/CheckoutController.php
