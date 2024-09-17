@@ -53,12 +53,12 @@
         <div class="col-md-8 d-flex justify-content-start align-items-center">
             <input type="hidden" name="MAGNATI_MODE" id="MAGNATI_MODE" value="{{ env('MAGNATI_MODE') }}">
             <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="enableTelrTest" name="MAGNATI_MODE_RADIO" onchange="$('#MAGNATI_MODE').val(1)" class="custom-control-input"  @if (env('MAGNATI_MODE')) checked @endif>
-                <label class="custom-control-label" for="enableTelrTest">Enabled</label>
+                <input type="radio" id="enableMagnatiTest" name="MAGNATI_MODE_RADIO" onchange="$('#MAGNATI_MODE').val(1)" class="custom-control-input"  @if (env('MAGNATI_MODE')) checked @endif>
+                <label class="custom-control-label" for="enableMagnatiTest">Enabled</label>
             </div>
             <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="disableTelrTest" name="MAGNATI_MODE_RADIO" onchange="$('#MAGNATI_MODE').val(0)" class="custom-control-input"  @if (!env('MAGNATI_MODE')) checked @endif>
-                <label class="custom-control-label" for="disableTelrTest">Disabled</label>
+                <input type="radio" id="disableMagnatiTest" name="MAGNATI_MODE_RADIO" onchange="$('#MAGNATI_MODE').val(0)" class="custom-control-input"  @if (!env('MAGNATI_MODE')) checked @endif>
+                <label class="custom-control-label" for="disableMagnatiTest">Disabled</label>
             </div>
         </div>
     </div>
