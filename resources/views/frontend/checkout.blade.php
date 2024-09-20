@@ -81,9 +81,11 @@
                                     <div class="card-body" id="payment_info">
                                         @include('frontend.partials.cart.payment_info', ['carts' => $carts, 'total' => $total])
 
-                                        <div class="alert alert-warning" role="alert">
-                                            {{ translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)') }}
-                                        </div>
+                                        @if (env('MANUAL_PAYMENT'))
+                                            <div class="alert alert-warning" role="alert">
+                                                {{ translate('Payment upon Shipping Cost Confirmation. maybe (24 hours)') }}
+                                            </div>
+                                        @endif
 
                                         <!-- Agree Box -->
                                         <div class="pt-2rem fs-14">

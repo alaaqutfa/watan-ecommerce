@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="page-content">
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <!-- Titlebar -->
     <div class="aiz-titlebar text-left mt-3 pb-3 px-3 px-md-4 border-bottom border-gray">
         <div class="row align-items-center">
@@ -12,55 +18,63 @@
             </div>
         </div>
     </div>
+    @if (!$order->shipping_cost_status)
+        <form action="{{ route('order.update', $order->id) }}" method="POST" enctype="multipart/form-data" id="choice_form" class="mt-4 p-4 bg-white rounded shadow-sm">    
+            @csrf   
+            @method('GET')  
+            <input type="hidden" name="_method" value="GET">    
+            <input type="hidden" name="id" value="{{ $order->id }}">    
 
-    <form action="{{ route('order.update', $order->id) }}" method="POST" enctype="multipart/form-data" id="choice_form" class="mt-4 p-4 bg-white rounded shadow-sm">
-        @csrf
-        <input type="hidden" name="_method" value="GET">
-        <input type="hidden" name="id" value="{{ $order->id }}">
+            <div class="products-info py-4">
+                <h5 class="mb-4 fs-17 fw-700 border-bottom pb-3" style="border-color: #dee2e6;">
+                    <i class="fas fa-box"></i> {{ translate('Products Information') }}
+                </h5>
 
-        <div class="products-info py-4">
-            <h5 class="mb-4 fs-17 fw-700 border-bottom pb-3" style="border-color: #dee2e6;">
-                <i class="fas fa-box"></i> {{ translate('Products Information') }}
-            </h5>
-
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="bg-light">
-                        <tr>
-                            <th>{{ translate('Product ID') }}</th>
-                            <th>{{ translate('Product Name') }}</th>
-                            <th>{{ translate('Quantity') }}</th>
-                            <th>{{ translate('Price') }}</th>
-                            <th>{{ translate('Total') }}</th>
-                            <th>{{ translate('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- @foreach($order->products as $product)
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="bg-light">
                             <tr>
-                                <td>{{ $product->id }}</td>
-                                <td>{{ $product->name }}</td>
-                                <td>
-                                    <input type="number" class="form-control" name="products[{{ $product->id }}][quantity]" value="{{ $product->pivot->quantity }}" min="1">
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeProduct({{ $product->id }})">
-                                        <i class="fas fa-trash-alt"></i> {{ translate('Remove') }}
-                                    </button>
-                                </td>
+                                <th>{{ translate('Product ID') }}</th>
+                                <th>{{ translate('Product Name') }}</th>
+                                <th>{{ translate('Quantity') }}</th>
+                                <th>{{ translate('Price') }}</th>
+                                <th>{{ translate('Total') }}</th>
+                                <th>{{ translate('Actions') }}</th>
                             </tr>
-                        @endforeach --}}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach($order->orderDetails as $orderDetail)
+                                <tr>
+                                    <td>{{ $orderDetail->product->id }}</td>
+                                    <td>{{ $orderDetail->product->name }}</td>
+                                    <td>
+                                        <input type="number" class="form-control" name="quantities[{{ $orderDetail->id }}]" value="{{ $orderDetail->quantity }}" min="1">
+                                    </td>
+                                    <td>{{ $orderDetail->price }}</td>
+                                    <td>{{ $orderDetail->price * $orderDetail->quantity}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="showDeleteForm({{ $orderDetail->id }})">
+                                            <i class="fas fa-trash-alt"></i> {{ translate('Remove') }}
+                                        </button>                                   
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-            <div class="mt-4 text-right">
-                <button type="submit" name="update_products" class="btn btn-primary w-230px btn-md rounded-pill fs-15 fw-700 shadow-primary action-btn">
-                    <i class="fas fa-edit"></i> {{ translate('Update Products') }}
-                </button>
+                <div class="mt-4 text-right">
+                    <button type="submit" name="update_products" class="btn btn-primary w-230px btn-md rounded-pill fs-15 fw-700 shadow-primary action-btn">
+                        <i class="fas fa-edit"></i> {{ translate('Update Products') }}
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
+    @endif
 
+    <form action="{{ route('shipping.cost.order.update', $order->id) }}" method="POST" enctype="multipart/form-data" id="choice_form" class="mt-4 p-4 bg-white rounded shadow-sm">
+        @csrf
+        @method('GET')
         <div class="shipping-info py-4">
             <h5 class="mb-4 fs-17 fw-700 border-bottom pb-3" style="border-color: #dee2e6;">
                 <i class="fas fa-shipping-fast"></i> {{ translate('Shipping Information') }}
@@ -84,22 +98,29 @@
                 </button>
             </div>
         </div>
-
-        <div class="invoice-summary py-4 mt-5">
-            <table class="table table-bordered table-striped">
-                <tbody>
-                    <tr>
-                        <td class="text-left"><i class="fas fa-shipping-fast"></i> <strong>{{ translate('Shipping Cost') }}</strong></td>
-                        <td class="text-right">{{ number_format($order->shipping_cost, 2) }} {{ translate('USD') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left"><i class="fas fa-receipt"></i> <strong>{{ translate('Total Invoice Amount') }}</strong></td>
-                        <td class="text-right">{{ number_format($order->total, 2) }} {{ translate('USD') }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </form>
+
+    <div class="invoice-summary py-4 mt-5">
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <td class="text-left"><i class="fas fa-shipping-fast"></i> <strong>{{ translate('Shipping Cost') }}</strong></td>
+                    <td class="text-right">{{ number_format($order->shipping_cost, 2) }} {{ translate('USD') }}</td>
+                </tr>
+                <tr>
+                    <td class="text-left"><i class="fas fa-receipt"></i> <strong>{{ translate('Total Invoice Amount') }}</strong></td>
+                    <td class="text-right">{{ number_format($order->total, 2) }} {{ translate('USD') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    @foreach($order->orderDetails as $orderDetail)
+        <form id="delete-form-{{ $orderDetail->id }}" action="{{ route('orders.removeProduct', ['orderId' => $order->id, 'orderDetailId' => $orderDetail->id ]) }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+    @endforeach
 </div>
 @endsection
 
@@ -111,14 +132,15 @@
 @endsection
 
 @section('script')
-    <script type="text/javascript">
-        // Remove Product Function
-        function removeProduct(productId) {
-            if(confirm('{{ translate('Are you sure you want to remove this product?') }}')) {
-                // Add your logic to remove the product from the order (AJAX or form submission)
-            }
+
+<script type="text/javascript">
+    function showDeleteForm(orderDetailId) {
+        if (confirm('{{ translate('Are you sure you want to remove this product from the order?') }}')) {
+            document.getElementById('delete-form-' + orderDetailId).submit();
         }
-    </script>
+    }
+</script>
+    
 @endsection
 
 <style>

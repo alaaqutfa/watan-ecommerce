@@ -365,6 +365,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'prevent-ba
         //
         Route::get('/orders/{id}/edit', 'orders_edit')->name('orders.edit');
         Route::get('/orders/{id}/update', 'orders_update')->name('order.update');
+        Route::get('/orders/{id}/shipping-cost-update', 'orderShippingCost_update')->name('shipping.cost.order.update');
+        Route::delete('orders/{orderId}/removeProduct/{orderDetailId}', [OrderController::class, 'removeProduct'])->name('orders.removeProduct');
         //
         Route::get('/inhouse-orders/{id}/show', 'show')->name('inhouse_orders.show');
         Route::get('/seller_orders/{id}/show', 'show')->name('seller_orders.show');

@@ -87,7 +87,7 @@
 
 <!-- Order Details -->
 <div class="row gutters-16">
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="card rounded-0 shadow-none border mt-2 mb-4">
             <div class="card-header border-bottom-0">
                 <h5 class="fs-16 fw-700 text-dark mb-0">{{ translate('Order Details') }}</h5>
@@ -195,7 +195,7 @@
     </div>
 
     <!-- Order Ammount -->
-    <div class="col-md-3">
+    <div class="col-md-6">
         <div class="card rounded-0 shadow-none border mt-2">
             <div class="card-header border-bottom-0">
                 <b class="fs-16 fw-700 text-dark">{{ translate('Order Ammount') }}</b>
