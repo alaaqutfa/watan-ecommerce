@@ -89,7 +89,7 @@
                                 <td class="fw-700">
 
                                     <input type="hidden" class="calc_prices"
-                                        value="{{ format_price_without_currency($order->grand_total) }}">
+                                        value="{{ $order->grand_total }}">
                                     {{ single_price($order->grand_total) }}
                                 </td>
                                 <!-- Delivery Status -->
@@ -253,7 +253,7 @@
         var currency_symbol = "{{ currency_symbol() }}";
         var all_price = document.querySelectorAll('.calc_prices');
         var calc_prices = document.querySelector('#calc_prices');
-        var sum = 10;
+        var sum = 0;
 
         all_price.forEach((price) => {
             var p = parseFloat(parseFloat(price.value).toFixed(2)); // Convert to float after rounding

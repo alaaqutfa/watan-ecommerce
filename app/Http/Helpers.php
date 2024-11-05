@@ -265,36 +265,6 @@ if (!function_exists('format_price')) {
     }
 }
 
-//formats without currency
-if (!function_exists('format_price_without_currency')) {
-    function format_price_without_currency($price, $isMinimize = false)
-    {
-        // $price = convert_price($price);
-        if (get_setting('decimal_separator') == 1) {
-            $fomated_price = number_format(floatval($price), get_setting('no_of_decimals'));
-        } else {
-            $fomated_price = number_format(floatval($price), get_setting('no_of_decimals'), ',', '.');
-        }
-
-
-        // Minimize the price
-        if ($isMinimize) {
-            $temp = number_format(floatval($price) / 1000000000, get_setting('no_of_decimals'), ".", "");
-
-            if ($temp >= 1) {
-                $fomated_price = $temp . "B";
-            } else {
-                $temp = number_format(floatval($price) / 1000000, get_setting('no_of_decimals'), ".", "");
-                if ($temp >= 1) {
-                    $fomated_price = $temp . "M";
-                }
-            }
-        }
-
-        return $fomated_price;
-    }
-}
-
 //formats price to home default price with convertion
 if (!function_exists('single_price')) {
     function single_price($price)
