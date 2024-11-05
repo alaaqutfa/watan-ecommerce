@@ -75,6 +75,7 @@
                     </tr>
                 </thead>
                 <tbody class="fs-14">
+                    @php($calc_price = 0)
                     @foreach ($orders as $key => $order)
                         @if (count($order->orderDetails) > 0)
                             <tr>
@@ -90,6 +91,7 @@
 
                                     <input type="hidden" class="calc_prices"
                                         value="{{ $order->grand_total }}">
+                                        @php($calc_price = $calc_price + $order->grand_total)
                                     {{ single_price($order->grand_total) }}
                                 </td>
                                 <!-- Delivery Status -->
@@ -230,7 +232,7 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        <td><span id="calc_prices" class="fw-700"></span></td>
+                        <td><span class="fw-700">{{ single_price($calc_price) }}</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -248,18 +250,3 @@
     @include('modals.delete_modal')
 @endsection
 
-@section('script')
-    <script type="text/javascript">
-        var currency_symbol = "{{ currency_symbol() }}";
-        var all_price = document.querySelectorAll('.calc_prices');
-        var calc_prices = document.querySelector('#calc_prices');
-        var sum = 0;
-
-        all_price.forEach((price) => {
-            var p = parseFloat(parseFloat(price.value).toFixed(2)); // Convert to float after rounding
-            sum += p; // Add to sum
-        });
-
-        calc_prices.innerHTML = currency_symbol + sum.toFixed(2); // Display with 2 decimal places
-    </script>
-@endsection
