@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-lg-2">
                     <div class="form-group mb-0">
-                        <input type="text" class="form-control" id="search"
+                        <input type="text" class="form-control"
                             name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset
                             placeholder="{{ translate('Type Order code & hit Enter') }}">
                     </div>
@@ -87,6 +87,9 @@
                                 <td class="text-secondary">{{ date('d-m-Y', $order->date) }}</td>
                                 <!-- Amount -->
                                 <td class="fw-700">
+
+                                    <input type="hidden" class="calc_prices"
+                                        value="{{ format_price_without_currency($order->grand_total) }}">
                                     {{ single_price($order->grand_total) }}
                                 </td>
                                 <!-- Delivery Status -->
@@ -224,6 +227,11 @@
                             </tr>
                         @endif
                     @endforeach
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><span id="calc_prices" class="fw-700"></span></td>
+                    </tr>
                 </tbody>
             </table>
             <!-- Pagination -->
@@ -238,4 +246,20 @@
 @section('modal')
     <!-- Delete modal -->
     @include('modals.delete_modal')
+@endsection
+
+@section('script')
+    <script type="text/javascript">
+        var currency_symbol = "{{ currency_symbol() }}";
+        var all_price = document.querySelectorAll('.calc_prices');
+        var calc_prices = document.querySelector('#calc_prices');
+        var sum = 10;
+
+        all_price.forEach((price) => {
+            var p = parseFloat(parseFloat(price.value).toFixed(2)); // Convert to float after rounding
+            sum += p; // Add to sum
+        });
+
+        calc_prices.innerHTML = currency_symbol + sum.toFixed(2); // Display with 2 decimal places
+    </script>
 @endsection
