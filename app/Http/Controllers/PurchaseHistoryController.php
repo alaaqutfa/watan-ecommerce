@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use DB;
-use Auth;
 use App\Models\Order;
-use App\Models\Upload;
 use App\Models\Product;
+use App\Models\Upload;
 use App\Utility\CartUtility;
-use Cookie;
+use Auth;
+use DB;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 
 class PurchaseHistoryController extends Controller
 {
@@ -19,10 +19,36 @@ class PurchaseHistoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): View
     {
-        $orders = Order::with('orderDetails')->where('user_id', Auth::user()->id)->orderBy('code', 'desc')->paginate(10);
-        return view('frontend.user.purchase_history', compact('orders'));
+
+        $orders = Order::with('orderDetails')->where('user_id', Auth::user()->id)->orderBy('code', 'desc');
+
+        $date = $request->date;
+        $sort_search = null;
+        $delivery_status = null;
+        $payment_status = '';
+
+        if ($request->search) {
+            $sort_search = $request->search;
+            $orders = $orders->where('code', 'like', '%' . $sort_search . '%');
+        }
+        if ($request->payment_status != null) {
+            $orders = $orders->where('payment_status', $request->payment_status);
+            $payment_status = $request->payment_status;
+        }
+        if ($request->delivery_status != null) {
+            $orders = $orders->where('delivery_status', $request->delivery_status);
+            $delivery_status = $request->delivery_status;
+        }
+        if ($date != null) {
+            $orders = $orders->where('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])) . '  00:00:00')
+                ->where('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])) . '  23:59:59');
+        }
+
+        $orders = $orders->paginate(15);
+
+        return view('frontend.user.purchase_history', compact('orders', 'date', 'sort_search', 'delivery_status', 'payment_status'));
     }
 
     public function digital_index()
@@ -42,7 +68,7 @@ class PurchaseHistoryController extends Controller
     public function purchase_history_details($id)
     {
         $order = Order::findOrFail(decrypt($id));
-        if(env('DEMO_MODE') != 'On'){            
+        if (env('DEMO_MODE') != 'On') {
             $order->delivery_viewed = 1;
             $order->payment_status_viewed = 1;
             $order->save();
@@ -134,7 +160,7 @@ class PurchaseHistoryController extends Controller
 
             if ($product->auction_product == 0) {
 
-                // If product min qty is greater then the ordered qty, then update the order qty 
+                // If product min qty is greater then the ordered qty, then update the order qty
                 $order_qty = $orderDetail->quantity;
                 if ($product->digital == 0 && $order_qty < $product->min_qty) {
                     $order_qty = $product->min_qty;
@@ -143,7 +169,7 @@ class PurchaseHistoryController extends Controller
                 $cart = Cart::firstOrNew([
                     'variation' => $orderDetail->variation,
                     'user_id' => auth()->user()->id,
-                    'product_id' => $product->id
+                    'product_id' => $product->id,
                 ]);
 
                 $product_stock = $product->stocks->where('variant', $orderDetail->variation)->first();

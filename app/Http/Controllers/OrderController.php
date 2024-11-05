@@ -3,26 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AffiliateController;
-use Illuminate\Http\Request;
-use App\Models\Order;
-use App\Models\Cart;
-use App\Models\Address;
-use App\Models\Product;
-use App\Models\OrderDetail;
-use App\Models\CouponUsage;
-use App\Models\Coupon;
-use App\Models\User;
-use App\Models\CombinedOrder;
-use App\Models\SmsTemplate;
-use Auth;
-use Mail;
 use App\Mail\InvoiceEmailManager;
+use App\Models\Address;
+use App\Models\Cart;
+use App\Models\CombinedOrder;
+use App\Models\Coupon;
+use App\Models\CouponUsage;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\OrdersExport;
+use App\Models\Product;
+use App\Models\SmsTemplate;
+use App\Models\User;
 use App\Utility\NotificationUtility;
-use CoreComponentRepository;
 use App\Utility\SmsUtility;
+use Auth;
+use CoreComponentRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
+use Mail;
 
 class OrderController extends Controller
 {
@@ -32,7 +32,7 @@ class OrderController extends Controller
         // Staff Permission Check
         $this->middleware(['permission:view_all_orders|view_inhouse_orders|view_seller_orders|view_pickup_point_orders'])->only('all_orders');
         $this->middleware(['permission:view_order_details'])->only('show');
-        $this->middleware(['permission:delete_order'])->only('destroy','bulk_order_delete');
+        $this->middleware(['permission:delete_order'])->only('destroy', 'bulk_order_delete');
     }
 
     // All Orders
@@ -47,7 +47,6 @@ class OrderController extends Controller
 
         $orders = Order::with('orderDetails')->orderBy('id', 'desc');
         $admin_user_id = User::where('user_type', 'admin')->first()->id;
-
 
         if (
             Route::currentRouteName() == 'inhouse_orders.index' &&
@@ -104,16 +103,16 @@ class OrderController extends Controller
         $orders = $orders->paginate(15);
         return view('backend.sales.index', compact('orders', 'sort_search', 'payment_status', 'delivery_status', 'date'));
     }
-    
+
     public function edit($id)
     {
         $order = Order::where('id', $id)->with('orderDetails.product')->first();
-        return view('backend.sales.edit' , compact('order'));
+        return view('backend.sales.edit', compact('order'));
     }
-    
+
     public function orders_update(Request $request, $id)
     {
-        $order = Order::where('id',$id)->with('orderDetails')->first();
+        $order = Order::where('id', $id)->with('orderDetails')->first();
 
         if ($request->has('quantities')) {
             foreach ($order->orderDetails as $orderDetail) {
@@ -123,33 +122,33 @@ class OrderController extends Controller
                 }
             }
         }
-        
+
         flash(translate('Order has been updated successfully'))->success();
-        
+
         return back();
-    
+
         //return redirect()->back()->with('success', 'تم تحديث تكلفة الشحن والمجموع الكلي بنجاح');
     }
 
     public function orderShippingCost_update(Request $request, $id)
     {
-        $order = Order::where('id',$id)->with('orderDetails')->first();
+        $order = Order::where('id', $id)->with('orderDetails')->first();
         $combined_order_id = $order->combined_order_id;
-        $combined_orders = CombinedOrder::where('id',$combined_order_id)->first();
+        $combined_orders = CombinedOrder::where('id', $combined_order_id)->first();
 
         $combined_orders->grand_total -= $order->shipping_cost;
-        $order->grand_total-=$order->shipping_cost;
+        $order->grand_total -= $order->shipping_cost;
         $new_shipping_cost = $request->input('shipping_cost');
         $combined_orders->grand_total += $new_shipping_cost;
         $combined_orders->save();
         $order->shipping_cost = $request->input('shipping_cost');
         $order->grand_total += $new_shipping_cost;
-        $order->shipping_cost_status=1;
-        $order->save();  
-        NotificationUtility::sendNotification($order,'updateshipping');    
-        
+        $order->shipping_cost_status = 1;
+        $order->save();
+        NotificationUtility::sendNotification($order, 'updateshipping');
+
         flash(translate('Order shipping cost has been updated successfully'))->success();
-        
+
         return back();
     }
 
@@ -168,17 +167,16 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Product removed from the order successfully.');
     }
 
-    
     public function show($id)
     {
         $order = Order::findOrFail(decrypt($id));
-        
+
         $order_shipping_address = json_decode($order->shipping_address);
         $delivery_boys = User::where('city', $order_shipping_address->city)
-                ->where('user_type', 'delivery_boy')
-                ->get();
-                
-        if(env('DEMO_MODE') == 'On') {
+            ->where('user_type', 'delivery_boy')
+            ->get();
+
+        if (env('DEMO_MODE') == 'On') {
             $order->viewed = 1;
             $order->save();
         }
@@ -215,14 +213,14 @@ class OrderController extends Controller
 
         $shippingAddress = [];
         if ($address != null) {
-            $shippingAddress['name']        = Auth::user()->name;
-            $shippingAddress['email']       = Auth::user()->email;
-            $shippingAddress['address']     = $address->address;
-            $shippingAddress['country']     = $address->country->name;
-            $shippingAddress['state']       = $address->state->name;
-            $shippingAddress['city']        = $address->city->name;
+            $shippingAddress['name'] = Auth::user()->name;
+            $shippingAddress['email'] = Auth::user()->email;
+            $shippingAddress['address'] = $address->address;
+            $shippingAddress['country'] = $address->country->name;
+            $shippingAddress['state'] = $address->state->name;
+            $shippingAddress['city'] = $address->city->name;
             $shippingAddress['postal_code'] = $address->postal_code;
-            $shippingAddress['phone']       = $address->phone;
+            $shippingAddress['phone'] = $address->phone;
             if ($address->latitude || $address->longitude) {
                 $shippingAddress['lat_lang'] = $address->latitude . ',' . $address->longitude;
             }
@@ -267,7 +265,7 @@ class OrderController extends Controller
                 $product = Product::find($cartItem['product_id']);
 
                 $subtotal += cart_product_price($cartItem, $product, false, false) * $cartItem['quantity'];
-                $tax +=  cart_product_tax($cartItem, $product, false) * $cartItem['quantity'];
+                $tax += cart_product_tax($cartItem, $product, false) * $cartItem['quantity'];
                 $coupon_discount += $cartItem['discount'];
 
                 $product_variation = $cartItem['variation'];
@@ -362,14 +360,12 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
     /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    
 
     /**
      * Update the specified resource in storage.
@@ -378,7 +374,6 @@ class OrderController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    
 
     /**
      * Remove the specified resource from storage.
@@ -439,7 +434,7 @@ class OrderController extends Controller
         }
 
         // If the order is cancelled and the seller commission is calculated, deduct seller earning
-        if($request->status == 'cancelled' && $order->user->user_type == 'seller' && $order->payment_status == 'paid' && $order->commission_calculated == 1){
+        if ($request->status == 'cancelled' && $order->user->user_type == 'seller' && $order->payment_status == 'paid' && $order->commission_calculated == 1) {
             $sellerEarning = $order->commissionHistory->seller_earning;
             $shop = $order->shop;
             $shop->admin_to_pay -= $sellerEarning;
@@ -510,7 +505,6 @@ class OrderController extends Controller
             NotificationUtility::sendFirebaseNotification($request);
         }
 
-
         if (addon_is_activated('delivery_boy')) {
             if (Auth::user()->user_type == 'delivery_boy') {
                 $deliveryBoyController = new DeliveryBoyController;
@@ -557,7 +551,6 @@ class OrderController extends Controller
         $order->payment_status = $status;
         $order->save();
 
-
         if (
             $order->payment_status == 'paid' &&
             $order->commission_calculated == 0
@@ -579,7 +572,6 @@ class OrderController extends Controller
 
             NotificationUtility::sendFirebaseNotification($request);
         }
-
 
         if (addon_is_activated('otp_system') && SmsTemplate::where('identifier', 'payment_status_change')->first()->status == 1) {
             try {
@@ -639,8 +631,8 @@ class OrderController extends Controller
 
     public function orderBulkExport(Request $request)
     {
-        if($request->id){
-          return Excel::download(new OrdersExport($request->id), 'orders.xlsx');
+        if ($request->id) {
+            return Excel::download(new OrdersExport($request->id), 'orders.xlsx');
         }
         return back();
     }
