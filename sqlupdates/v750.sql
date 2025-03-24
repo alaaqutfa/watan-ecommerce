@@ -1,3 +1,0 @@
-UPDATE `business_settings` SET `value` = '7.5.0' WHERE `business_settings`.`type` = 'current_version';
-
-COMMIT;
