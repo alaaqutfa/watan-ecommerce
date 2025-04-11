@@ -295,7 +295,7 @@
     </div>
 
     <!-- Banner section 4, Top Sellers -->
-    @if (get_setting('vendor_system_activation') == 1)
+    {{-- @if (get_setting('vendor_system_activation') == 1)
         @php
             $best_selers = get_best_sellers(10);
             $homeBanner4Images = get_setting('home_banner4_images', null, $lang);
@@ -401,7 +401,7 @@
             </div>
         </section>
         @endif
-    @endif
+    @endif --}}
 
     <!-- Top Brands, Banner section 5, Banner section 6 -->
     @if (get_setting('top_brands') != null)
