@@ -448,7 +448,7 @@
 
     <div class="container mt-2 mt-md-3 mb-2 mb-md-3 pb-4">
         <div class="row">
-            <!--<div class="col-xl-6 py-3 py-xl-0">-->
+            {{-- <!--<div class="col-xl-6 py-3 py-xl-0">-->
                 <!-- Top Sellers -->
             <!--    @if (get_setting('vendor_system_activation') == 1)-->
             <!--        @php-->
@@ -510,7 +510,7 @@
             <!--        </section>-->
             <!--        @endif-->
             <!--    @endif-->
-            <!--</div>-->
+            <!--</div>--> --}}
 
             <div class="col-xl-6 py-3 py-xl-0">
                 <!-- Top Brands -->
