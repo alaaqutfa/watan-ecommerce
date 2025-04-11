@@ -36,6 +36,7 @@ use App\Http\Controllers\Payment\PaystackController;
 use App\Http\Controllers\Payment\RazorpayController;
 use App\Http\Controllers\Payment\SslcommerzController;
 use App\Http\Controllers\Payment\StripeController;
+use App\Http\Controllers\Payment\ZiinaController;
 use App\Http\Controllers\Payment\TelrController;
 use App\Http\Controllers\Payment\MagnatiController;
 use App\Http\Controllers\Payment\TapController;
@@ -235,6 +236,15 @@ Route::controller(StripeController::class)->group(function () {
     Route::get('/stripe/cancel', 'cancel')->name('stripe.cancel');
 });
 //Stripe END
+
+//Ziina Start
+Route::controller(ZiinaController::class)->group(function () {
+    Route::get('ziina', 'ziina');
+    Route::get('/ziina/callback', 'callback')->name('ziina.callback');
+    Route::get('/ziina/success', 'success')->name('ziina.success');
+    Route::get('/ziina/cancel', 'cancel')->name('ziina.cancel');
+});
+//Ziina END
 
 //Telr Start
 Route::controller(TelrController::class)->group(function () {

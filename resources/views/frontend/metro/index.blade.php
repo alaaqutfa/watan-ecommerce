@@ -542,17 +542,17 @@
     @endif
 
     <!-- Top Sellers -->
-    <!--@if (get_setting('vendor_system_activation') == 1)-->
-    <!--    @php-->
-    <!--        $best_selers = get_best_sellers(10);-->
-    <!--    @endphp-->
-    <!--    @if (count($best_selers) > 0)-->
-    <!--    <section class="mb-2 mb-md-3 mt-2 mt-md-3">-->
-    <!--        <div class="container">-->
+    {{-- @if (get_setting('vendor_system_activation') == 1)
+        @php
+          $best_selers = get_best_sellers(10);
+        @endphp
+       @if (count($best_selers) > 0)
+        <section class="mb-2 mb-md-3 mt-2 mt-md-3">
+           <div class="container">
                 <!-- Top Section -->
-    <!--            <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">-->
+               <div class="d-flex mb-2 mb-md-3 align-items-baseline justify-content-between">
                     <!-- Title -->
-    <!--                <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">-->
+                    <h3 class="fs-16 fs-md-20 fw-700 mb-2 mb-sm-0">
     <!--                    <span class="pb-3">{{ translate('Top Sellers') }}</span>-->
     <!--                </h3>-->
                     <!-- Links -->
@@ -618,7 +618,7 @@
     <!--        </div>-->
     <!--    </section>-->
     <!--    @endif-->
-    <!--@endif-->
+    <!--@endif--> --}}
 
     <!-- Top Brands -->
     @if (get_setting('top_brands') != null)

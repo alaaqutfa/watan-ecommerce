@@ -3,7 +3,7 @@
     @section('content')
         <div class="row">
             @foreach ($payment_methods as $payment_method)
-                @if ($payment_method->name == 'telr' || $payment_method->name == 'magnati')
+                @if ($payment_method->name == 'telr' || $payment_method->name == 'magnati' || $payment_method->name == 'ziina')
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header">
