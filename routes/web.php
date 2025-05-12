@@ -36,6 +36,7 @@ use App\Http\Controllers\Payment\PaystackController;
 use App\Http\Controllers\Payment\RazorpayController;
 use App\Http\Controllers\Payment\SslcommerzController;
 use App\Http\Controllers\Payment\StripeController;
+use App\Http\Controllers\Payment\PaytikoController;
 use App\Http\Controllers\Payment\ZiinaController;
 use App\Http\Controllers\Payment\TelrController;
 use App\Http\Controllers\Payment\MagnatiController;
@@ -236,6 +237,16 @@ Route::controller(StripeController::class)->group(function () {
     Route::get('/stripe/cancel', 'cancel')->name('stripe.cancel');
 });
 //Stripe END
+
+//Paytiko Start
+Route::controller(PaytikoController::class)->group(function () {
+    Route::get('paytiko', 'paytiko');
+    Route::post('/paytiko/create-checkout-session', 'create_checkout_session')->name('paytiko.get_token');
+    Route::get('/paytiko/pay', 'pay')->name('paytiko.pay');
+    Route::get('/paytiko/success', 'success')->name('paytiko.success');
+    Route::get('/paytiko/cancel', 'cancel')->name('paytiko.cancel');
+});
+//Paytiko END
 
 //Ziina Start
 Route::controller(ZiinaController::class)->group(function () {
