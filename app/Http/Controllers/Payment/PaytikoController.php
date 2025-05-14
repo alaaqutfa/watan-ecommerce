@@ -22,6 +22,12 @@ class PaytikoController extends Controller
         return view('frontend.payment.paytiko', compact('order'));
     }
 
+    public function quickPay()
+    {
+        $user  = auth()->user();
+        return view('frontend.payment.paytiko_quickPay', compact('user'));
+    }
+
     public function create_checkout_session(Request $request)
     {
         $reqInfo  = $request->info;
@@ -36,14 +42,14 @@ class PaytikoController extends Controller
             $desc = "";
         }
         require_once 'vendor/autoload.php';
-        $client       = new \GuzzleHttp\Client();
-        $mode         = env('PAYTIKO_MODE');
+        $client = new \GuzzleHttp\Client();
+        $mode   = env('PAYTIKO_MODE');
         if ($mode) {
-            $url = "https://core.paytiko.com/api/sdk/checkout";
-            $secretKey    = env('PAYTIKO_MERCHANT_SECRET_KEY');
+            $url       = "https://core.paytiko.com/api/sdk/checkout";
+            $secretKey = env('PAYTIKO_MERCHANT_SECRET_KEY');
         } else {
-            $url = "https://uat-core.paytiko.com/api/sdk/checkout";
-            $secretKey    = "Ikab-i1ElE4i";
+            $url       = "https://uat-core.paytiko.com/api/sdk/checkout";
+            $secretKey = "Ikab-i1ElE4i";
         }
         $countryCodes = [
             "Afghanistan"                      => "AF",
