@@ -29,7 +29,7 @@ class PaymentTypesController
             $all_online_payment_methods = get_activate_payment_methods();
             if (count($all_online_payment_methods) > 0) {
                 $available_online_payment_methods = [
-                    "paypal", "stripe", "magnati", "telr", "instamojo", "razorpay", "paystack", "iyzico", "bkash", "nagad", "sslcommerz", "aamarpay", "flutterwave", "payfast", "paytm", "khalti", "myfatoorah", "phonepe"
+                    "paypal", "stripe", "magnati", "telr", "paytiko", "instamojo", "razorpay", "paystack", "iyzico", "bkash", "nagad", "sslcommerz", "aamarpay", "flutterwave", "payfast", "paytm", "khalti", "myfatoorah", "phonepe"
                 ];
                 $online_payment_methods = $all_online_payment_methods->toQuery()->whereIn('name', $available_online_payment_methods)->get();
 
@@ -79,6 +79,22 @@ class PaymentTypesController
                 $payment_type['details'] = "";
                 if ($mode == 'wallet') {
                     $payment_type['title'] = translate("Recharge with Stripe");
+                }
+
+                $payment_types[] = $payment_type;
+            }
+
+            if (get_setting('paytiko_payment') == 1) {
+                $payment_type = array();
+                $payment_type['payment_type'] = 'paytiko_payment';
+                $payment_type['payment_type_key'] = 'paytiko';
+                $payment_type['image'] = static_asset('assets/img/cards/paytiko.png');
+                $payment_type['name'] = "Paytiko";
+                $payment_type['title'] = translate("Checkout with Paytiko");
+                $payment_type['offline_payment_id'] = 0;
+                $payment_type['details'] = "";
+                if ($mode == 'wallet') {
+                    $payment_type['title'] = translate("Recharge with Paytiko");
                 }
 
                 $payment_types[] = $payment_type;
