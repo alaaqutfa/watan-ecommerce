@@ -115,64 +115,45 @@
                     </a>
                 </div>
                 <form id="payForm" method="POST">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input type="text" class="form-control" name="name" placeholder="{{ translate('Username') }}"
-                            value="{{ $user->name }}" />
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input type="text" class="form-control" name="email" placeholder="{{ translate('Email') }}"
-                            value="{{ $user->email ?? '' }}" />
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        <input type="text" class="form-control" name="phone" placeholder="{{ translate('Phone') }}"
-                            value="{{ $user->phone ?? '' }}" required />
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fas fa-flag"></i>
-                        </span>
-                        <input type="hidden" name="country" />
-                        <select name="country_id" class="form-select" required>
-                            <option selected>{{ translate('Select your country') }}</option>
-                            @foreach (get_active_countries() as $key => $country)
-                                <option value="{{ $country->id }}">{{ $country->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div id="div_state_id" class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-building"></i></span>
-                        <select name="state_id" class="form-select" required>
-                            <option selected>{{ translate('State') }}</option>
-                        </select>
-                    </div>
-
-                    <div id="div_city_id" class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-home"></i></span>
-                        <select name="city_id" class="form-select">
-                            <option selected>{{ translate('City') }}</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fas fa-address-card"></i>
-                        </span>
-                        <input type="text" class="form-control" name="address"
-                            placeholder="{{ translate('Address') }}" />
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-mail-bulk"></i></span>
-                        <input type="number" class="form-control" name="postal_code"
-                            placeholder="{{ translate('Postal code') }}" />
-                    </div>
+                @if (Auth::check() && count(Auth::user()->addresses))
+                    @php($address = Auth::user()->addresses[0])
+                    <div class="border mb-4">
+                            <div class="row">
+                                <div class="col-md-8">
+                                        <span class="d-flex p-3 aiz-megabox-elem border-0">
+                                            <!-- Address -->
+                                            <span class="flex-grow-1 pl-3 text-left">
+                                                <div class="row">
+                                                    <span class="fs-14 text-secondary col-3">{{ translate('Address') }}</span>
+                                                    <span class="fs-14 text-dark fw-500 ml-2 col">{{ $address->address }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <span class="fs-14 text-secondary col-3">{{ translate('Postal Code') }}</span>
+                                                    <span class="fs-14 text-dark fw-500 ml-2 col">{{ $address->postal_code }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <span class="fs-14 text-secondary col-3">{{ translate('City') }}</span>
+                                                    <span class="fs-14 text-dark fw-500 ml-2 col">{{ optional($address->city)->name }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <span class="fs-14 text-secondary col-3">{{ translate('State') }}</span>
+                                                    <span class="fs-14 text-dark fw-500 ml-2 col">{{ optional($address->state)->name }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <span class="fs-14 text-secondary col-3">{{ translate('Country') }}</span>
+                                                    <span class="fs-14 text-dark fw-500 ml-2 col">{{ optional($address->country)->name }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <span class="fs-14 text-secondary col-3">{{ translate('Phone') }}</span>
+                                                    <span class="fs-14 text-dark fw-500 ml-2 col">{{ $address->phone }}</span>
+                                                </div>
+                                            </span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -204,61 +185,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script type="text/javascript">
-        $('#div_state_id').hide();
-        $('#div_city_id').hide();
-        $(document).on('change', '[name=country_id]', function() {
-            var country_id = $(this).val();
-            get_states(country_id);
-        });
-
-        $(document).on('change', '[name=state_id]', function() {
-            var state_id = $(this).val();
-            get_city(state_id);
-        });
-
-        function get_states(country_id) {
-            $('#div_state_id').show();
-            $('[name="state_id"]').html("");
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                url: "{{ route('get-state') }}",
-                type: 'POST',
-                data: {
-                    country_id: country_id
-                },
-                success: function(response) {
-                    var obj = JSON.parse(response);
-                    if (obj != '') {
-                        $('[name="state_id"]').html(obj);
-                    }
-                }
-            });
-        }
-
-        function get_city(state_id) {
-            $('#div_city_id').show();
-            $('[name="city_id"]').html("");
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                url: "{{ route('get-city') }}",
-                type: 'POST',
-                data: {
-                    state_id: state_id
-                },
-                success: function(response) {
-                    var obj = JSON.parse(response);
-                    if (obj != '') {
-                        $('[name="city_id"]').html(obj);
-
-                    }
-                }
-            });
-        }
-
         function generateThreeDigitId() {
             const number = Math.floor(Math.random() * 1000); // من 0 إلى 999
             return number.toString().padStart(3, '0'); // يضيف أصفار في البداية إذا لزم
@@ -267,14 +193,14 @@
         function quickPay() {
             var combined_order_id = generateThreeDigitId();
             var info = {
-                name: $('[name="name"]').val(),
-                email: $('[name="email"]').val(),
-                phone: $('[name="phone"]').val(),
-                country: $('[name="country_id"] option:selected').text(),
-                state: $('[name="state_id"] option:selected').text(),
-                city: $('[name="city_id"] option:selected').text(),
-                address: $('[name="address"]').val(),
-                postal_code: $('[name="postal_code"]').val(),
+                name: '{{ $user->name }}',
+                email: '{{ $user->email }}',
+                phone: '{{ $address->phone }}',
+                country: '{{ optional($address->country)->name }}',
+                state: '{{ optional($address->state)->name }}',
+                city: '{{ optional($address->city)->name }}',
+                address: '{{ $address->address }}',
+                postal_code: '{{ $address->postal_code }}',
             };
             var data = {
                 amount: $('[name="amount"]').val(),
