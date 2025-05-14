@@ -335,6 +335,8 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
     Route::any('stripe', 'App\Http\Controllers\Api\V2\StripeController@stripe');
     Route::any('stripe/payment/callback', 'App\Http\Controllers\Api\V2\StripeController@callback')->name('api.stripe.callback');
 
+    Route::any('paytiko','App\Http\Controllers\Api\V2\PaytikoController@paytiko');
+
     Route::any('telr','App\Http\Controllers\Api\V2\TelrController@telr');
 
     Route::any('magnati','App\Http\Controllers\Api\V2\MagnatiController@magnati');
@@ -411,6 +413,10 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function () {
         Route::any('stripe/create-checkout-session', 'App\Http\Controllers\Api\V2\StripeController@create_checkout_session')->name('api.stripe.get_token');
         Route::get('stripe/success', 'App\Http\Controllers\Api\V2\StripeController@payment_success');
         Route::any('stripe/cancel', 'App\Http\Controllers\Api\V2\StripeController@cancel')->name('api.stripe.cancel');
+
+        Route::any('paytiko/create-checkout-session', 'App\Http\Controllers\Api\V2\PaytikoController@create_checkout_session')->name('api.paytiko.get_token');
+        Route::get('paytiko/success', 'App\Http\Controllers\Api\V2\PaytikoController@payment_success')->name('api.paytiko.success');
+        Route::any('paytiko/cancel', 'App\Http\Controllers\Api\V2\PaytikoController@cancel')->name('api.paytiko.cancel');
 
         Route::any('telr/create-checkout-session', 'App\Http\Controllers\Api\V2\TelrController@create_checkout_session')->name('api.telr.get_token');
         Route::get('telr/success', 'App\Http\Controllers\Api\V2\TelrController@payment_success')->name('api.telr.success');
