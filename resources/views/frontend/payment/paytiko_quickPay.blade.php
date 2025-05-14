@@ -117,19 +117,19 @@
                 <form id="payForm" method="POST">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input type="text" class="form-control" name="name" placeholder="Username"
+                        <input type="text" class="form-control" name="name" placeholder="{{ translate('Username') }}"
                             value="{{ $user->name }}" />
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input type="text" class="form-control" name="email" placeholder="Email"
+                        <input type="text" class="form-control" name="email" placeholder="{{ translate('Email') }}"
                             value="{{ $user->email ?? '' }}" />
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        <input type="text" class="form-control" name="phone" placeholder="Phone"
+                        <input type="text" class="form-control" name="phone" placeholder="{{ translate('Phone') }}"
                             value="{{ $user->phone ?? '' }}" required />
                     </div>
 
@@ -170,27 +170,19 @@
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-mail-bulk"></i></span>
-                        <input type="text" class="form-control" name="postal_code"
+                        <input type="number" class="form-control" name="postal_code"
                             placeholder="{{ translate('Postal code') }}" />
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                        <input type="text" class="form-control" name="amount" placeholder="Amount" required />
+                        <input type="number" class="form-control" name="amount" placeholder="{{ translate('Amount') }}" required />
                     </div>
 
                     <!-- Agree Boxs -->
                     <div class="pt-2rem py-2 fs-14">
                         <label class="aiz-checkbox">
                             <input type="checkbox" required id="agree_checkbox">
-                            <span class="aiz-square-check"></span>
-                            <span>{{ translate('I agree to the') }}</span>
-                            <span>{{ translate('The merchant/customer will seek all legal repercussions before the courts in the event of the use of any illegal payment method, including stolen or counterfeit cards or any other payment methods that violate special laws. Acceptance of the privacy terms is also binding on all Liverpool Airlines and the policies they include, including this clause.') }}</span>
-                        </label>
-                    </div>
-                    <div class="pt-2rem py-2 fs-14">
-                        <label class="aiz-checkbox">
-                            <input type="checkbox" required id="agree_checkbox1">
                             <span class="aiz-square-check"></span>
                             <span>{{ translate('I agree to the') }}</span>
                         </label>
@@ -331,7 +323,7 @@
 
         $('#payForm').on('submit', function(e) {
             e.preventDefault();
-            if ($('#agree_checkbox').val() && $('#agree_checkbox1').val()) {
+            if ($('#agree_checkbox').val()) {
                 quickPay();
             }
         });
