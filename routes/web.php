@@ -243,7 +243,8 @@ Route::controller(PaytikoController::class)->group(function () {
     Route::get('paytiko', 'paytiko');
     Route::post('/paytiko/create-checkout-session', 'create_checkout_session')->name('paytiko.get_token');
     Route::get('/paytiko/pay', 'pay')->name('paytiko.pay');
-    Route::middleware(['auth:sanctum'])->get('/paytiko/quick-pay', 'quickPay')->name('paytiko.quickPay');
+    // Route::middleware(['auth:sanctum'])->get('/paytiko/quick-pay', 'quickPay')->name('paytiko.quickPay');
+    Route::get('/paytiko/quick-pay', 'quickPay')->name('paytiko.quickPay');
     Route::get('/paytiko/success', 'success')->name('paytiko.success');
     Route::get('/paytiko/cancel', 'cancel')->name('paytiko.cancel');
 });
