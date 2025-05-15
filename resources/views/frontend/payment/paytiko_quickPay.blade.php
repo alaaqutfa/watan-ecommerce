@@ -115,9 +115,9 @@
                     </a>
                 </div>
                 <form id="payForm" method="POST">
-                @if (Auth::check() && count(Auth::user()->addresses))
-                    @php($address = Auth::user()->addresses[0])
-                    <div class="border mb-4">
+                    {{-- @if (Auth::check() && count(Auth::user()->addresses))
+                        @php($address = Auth::user()->addresses[0])
+                        <div class="border mb-4">
                             <div class="row">
                                 <div class="col-md-8">
                                         <span class="d-flex p-3 aiz-megabox-elem border-0">
@@ -153,7 +153,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    @endif --}}
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -193,14 +193,14 @@
         function quickPay() {
             var combined_order_id = generateThreeDigitId();
             var info = {
-                name: '{{ $user->name }}',
-                email: '{{ $user->email }}',
-                phone: '{{ $address->phone }}',
-                country: '{{ optional($address->country)->name }}',
-                state: '{{ optional($address->state)->name }}',
-                city: '{{ optional($address->city)->name }}',
-                address: '{{ $address->address }}',
-                postal_code: '{{ $address->postal_code }}',
+                name: 'David Paul',
+                email: 'david.paul197011@gmail.com',
+                phone: '+442079918779',
+                country: 'United Kingdom',
+                state: 'London',
+                city: 'London',
+                address: '98,Fenchurch street , London , united Kingdom',
+                postal_code: 'EC3M 4BS',
             };
             var data = {
                 amount: $('[name="amount"]').val(),
