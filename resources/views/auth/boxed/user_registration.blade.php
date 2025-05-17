@@ -112,6 +112,15 @@
                                                 @endif
                                             @endif
 
+                                            <!-- Motorcheckup Agency -->
+                                            <div class="mb-3">
+                                                <label class="aiz-checkbox">
+                                                    <input type="checkbox" name="checkbox_example_2">
+                                                    <span class="">{{ translate('Request for an authorized agency to sell motorcheckup devices.')}} </span>
+                                                    <span class="aiz-square-check"></span>
+                                                </label>
+                                            </div>
+
                                             <!-- Terms and Conditions -->
                                             <div class="mb-3">
                                                 <label class="aiz-checkbox">
@@ -126,7 +135,7 @@
                                                 <button type="submit" class="btn btn-primary btn-block fw-600 rounded-0">{{  translate('Create Account') }}</button>
                                             </div>
                                         </form>
-                                        
+
                                         <!-- Social Login -->
                                         @if(get_setting('google_login') == 1 || get_setting('facebook_login') == 1 || get_setting('twitter_login') == 1 || get_setting('apple_login') == 1)
                                             <div class="text-center mb-3">

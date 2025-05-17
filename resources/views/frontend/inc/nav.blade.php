@@ -85,10 +85,15 @@
                 <div class="col-6 text-right d-none d-lg-block">
                     <ul class="list-inline mb-0 h-100 d-flex justify-content-end align-items-center">
                         @if (get_setting('vendor_system_activation') == 1)
+                            <!-- Become a Agent -->
+                            <li class="list-inline-item mr-0 pl-0 py-2">
+                                <a href="{{ route('user.registration') }}"
+                                    class="text-secondary fs-12 pr-3 d-inline-block border-width-2 border-right">{{ translate('Be an agent') }}</a>
+                            </li>
                             <!-- Become a Seller -->
                             <li class="list-inline-item mr-0 pl-0 py-2">
                                 <a href="{{ route('shops.create') }}"
-                                    class="text-secondary fs-12 pr-3 d-inline-block border-width-2 border-right">{{ translate('Become a Seller !') }}</a>
+                                    class="text-secondary fs-12 px-3 d-inline-block border-width-2 border-right">{{ translate('Become a Seller !') }}</a>
                             </li>
                             <!-- Seller Login -->
                             <li class="list-inline-item mr-0 pl-0 py-2">

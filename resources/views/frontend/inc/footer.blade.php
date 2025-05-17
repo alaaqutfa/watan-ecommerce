@@ -160,21 +160,26 @@
             </a>
         </div>
         <div class="row">
-             <!-- about & subscription -->
+            <!-- about & subscription -->
             <div class="col-xl-6 col-lg-7">
                 <div class="mb-4 text-secondary text-justify">
                     {!! get_setting('about_us_description', null, App::getLocale()) !!}
                 </div>
-                <h5 class="fs-14 fw-700 text-soft-light mt-1 mb-3">{{ translate('Subscribe to our newsletter for regular updates about Offers, Coupons & more') }}</h5>
+                <h5 class="fs-14 fw-700 text-soft-light mt-1 mb-3">
+                    {{ translate('Subscribe to our newsletter for regular updates about Offers, Coupons & more') }}
+                </h5>
                 <div class="mb-3">
                     <form method="POST" action="{{ route('subscribers.store') }}">
                         @csrf
                         <div class="row gutters-10">
                             <div class="col-8">
-                                <input type="email" class="form-control border-secondary rounded-0 text-white w-100 bg-transparent" placeholder="{{ translate('Your Email Address') }}" name="email" required>
+                                <input type="email"
+                                    class="form-control border-secondary rounded-0 text-white w-100 bg-transparent"
+                                    placeholder="{{ translate('Your Email Address') }}" name="email" required>
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary rounded-0 w-100">{{ translate('Subscribe') }}</button>
+                                <button type="submit"
+                                    class="btn btn-primary rounded-0 w-100">{{ translate('Subscribe') }}</button>
                             </div>
                         </div>
                     </form>
@@ -382,6 +387,13 @@
                             <ul class="list-unstyled">
                                 <li class="mb-2">
                                     <p class="fs-13 text-soft-light mb-0">
+                                        {{ translate('Be an agent') }}
+                                        <a href="{{ route('user.registration') }}"
+                                            class="fs-13 fw-700 text-secondary-base ml-2">{{ translate('Apply Now') }}</a>
+                                    </p>
+                                </li>
+                                <li class="mb-2">
+                                    <p class="fs-13 text-soft-light mb-0">
                                         {{ translate('Become A Seller') }}
                                         <a href="{{ route('shops.create') }}"
                                             class="fs-13 fw-700 text-secondary-base ml-2">{{ translate('Apply Now') }}</a>
@@ -561,6 +573,13 @@
                 <div class="aiz-accordion-panel bg-transparent" style="background-color: #212129 !important;">
                     <div class="container">
                         <ul class="list-unstyled mt-3">
+                            <li class="mb-2 pb-2 {{ areActiveRoutes(['user.registration'], ' active') }}">
+                                <p class="fs-13 text-soft-light text-sm-secondary mb-0">
+                                    {{ translate('Be an agent') }}
+                                    <a href="{{ route('user.registration') }}"
+                                        class="fs-13 fw-700 text-secondary-base ml-2">{{ translate('Apply Now') }}</a>
+                                </p>
+                            </li>
                             <li class="mb-2 pb-2 {{ areActiveRoutes(['shops.create'], ' active') }}">
                                 <p class="fs-13 text-soft-light text-sm-secondary mb-0">
                                     {{ translate('Become A Seller') }}
